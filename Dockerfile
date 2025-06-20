@@ -50,7 +50,7 @@ RUN { \
     } > /usr/local/etc/php/conf.d/custom.ini
 
 # Configurar Apache
-COPY ./master/docker/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY ./master/devops/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
 <VirtualHost *:80>
     ServerAdmin webmaster@localhost
     DocumentRoot /var/www/html
@@ -103,7 +103,7 @@ COPY ./master/docker/apache/000-default.conf /etc/apache2/sites-available/000-de
 EOF
 
 # Crear archivo .htaccess para el directorio raíz
-COPY ./master/docker/htaccess/.htaccess /var/www/html/.htaccess
+COPY ./master/devops/htaccess/.htaccess /var/www/html/.htaccess
 # Habilitar rewrite engine
 RewriteEngine On
 
