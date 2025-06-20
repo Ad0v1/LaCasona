@@ -103,7 +103,7 @@ COPY devops/apache/000-default.conf /etc/apache2/sites-available/000-default.con
 EOF
 
 # Crear archivo .htaccess para el directorio raíz
-COPY .devops/htaccess/.htaccess /var/www/html/.htaccess
+COPY devops/htaccess/.htaccess /var/www/html/.htaccess
 # Habilitar rewrite engine
 RewriteEngine On
 
