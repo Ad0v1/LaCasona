@@ -1,0 +1,12 @@
+RewriteEngine On
+
+# Proteger archivos sensibles
+<Files ~ "^\.">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|sql|conf)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
