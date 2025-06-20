@@ -1,651 +1,818 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="no-js">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carta - La Casona</title>
-
+    
     <script>
         document.documentElement.classList.remove('no-js');
         document.documentElement.classList.add('js');
     </script>
 
-    <link rel="stylesheet" href="CSS/proveedor.css">
-    <link rel="stylesheet" href="CSS/estilo.css">
+    <link rel="stylesheet" href="../assets/css/proveedor.css">
+    <link rel="stylesheet" href="../assets/css/estilo.css">
 
-    <link rel="apple-touch-icon" sizes="180x180" href="Logo-apple.png">
-    <link rel="Logo-32x32" type="image/png" sizes="32x32" href="Logo-32x32.png">
-    <link rel="Logo-16x16" type="image/png" sizes="16x16" href="Logo-16x16.png">
-    <link rel="manifest" href="site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/imagenes/LOGO/Logo-apple.png">
+    <link rel="Logo-32x32" type="image/png" sizes="32x32" href="../assets/imagenes/LOGO/Logo-32x32.png">
+    <link rel="Logo-16x16" type="image/png" sizes="16x16" href="../assets/imagenes/LOGO/Logo-16x16.png">
 
+    <style>
+        /* Animaciones rápidas y suaves */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease-out;
+        }
+
+        .fade-in-up.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .fade-in-left {
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.4s ease-out;
+        }
+
+        .fade-in-left.animate {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .fade-in-right {
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.4s ease-out;
+        }
+
+        .fade-in-right.animate {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Hero Section con GIF sutil */
+        .s-menu-hero {
+            padding: 6rem 0 4rem;
+            background: var(--color-gray-1);
+            position: relative;
+        }
+
+        .s-menu-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('assets/imagenes/desayuno.gif');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.03;
+            z-index: 1;
+        }
+
+        .menu-hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .menu-hero-items {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .menu-hero-item {
+            background: var(--color-white);
+            border-radius: 8px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid var(--color-gray-3);
+            flex: 1;
+            min-width: 280px;
+            max-width: 320px;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .menu-hero-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .menu-hero-item h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: #2c3e50;
+        }
+
+        .menu-hero-item .subtitle {
+            font-size: 0.95rem;
+            color: var(--color-text-light);
+            margin-bottom: 1rem;
+        }
+
+        .menu-hero-item .price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 1rem 0;
+        }
+
+        .menu-hero-item .description {
+            font-size: 0.9rem;
+            color: var(--color-text);
+            opacity: 0.8;
+        }
+
+        /* Títulos de sección más grandes */
+        .section-title {
+            font-size: 3.2rem;
+            font-weight: 700;
+            color: #1a252f;
+            text-align: center;
+            margin-bottom: 3rem;
+            letter-spacing: 0.5px;
+        }
+
+        .category-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        /* Secciones de menú con segmentación sutil */
+        .s-menu-section {
+            padding: 4rem 0;
+        }
+
+        .s-menu-section:nth-child(even) {
+            background: #fafbfc;
+        }
+
+        .menu-category {
+            margin-bottom: 3rem;
+        }
+
+        /* Elementos del menú más grandes */
+        .menu-item h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.4rem;
+        }
+
+        .menu-item p {
+            font-size: 1rem;
+            color: #7f8c8d;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* Bebidas como lista simple */
+        .drinks-list {
+            margin-top: 1.5rem;
+        }
+
+        .drinks-simple-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .drinks-simple-list li {
+            background: #ecf0f1;
+            padding: 0.8rem 1.2rem;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #2c3e50;
+            transition: all 0.3s ease;
+        }
+
+        .drinks-simple-list li:hover {
+            background: #3498db;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Nota especial */
+        .menu-note {
+            background: #e8f4f8;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #3498db;
+        }
+
+        .menu-note p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #2c3e50;
+        }
+
+        /* Animaciones escalonadas */
+        .stagger-animation .menu-item {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s ease-out;
+        }
+
+        .stagger-animation .menu-item.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stagger-animation .menu-item:nth-child(1) { transition-delay: 0.05s; }
+        .stagger-animation .menu-item:nth-child(2) { transition-delay: 0.1s; }
+        .stagger-animation .menu-item:nth-child(3) { transition-delay: 0.15s; }
+        .stagger-animation .menu-item:nth-child(4) { transition-delay: 0.2s; }
+        .stagger-animation .menu-item:nth-child(5) { transition-delay: 0.25s; }
+        .stagger-animation .menu-item:nth-child(6) { transition-delay: 0.3s; }
+        .stagger-animation .menu-item:nth-child(7) { transition-delay: 0.35s; }
+        .stagger-animation .menu-item:nth-child(8) { transition-delay: 0.4s; }
+
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            .section-title {
+                font-size: 2.2rem;
+            }
+            
+            .category-title {
+                font-size: 1.3rem;
+            }
+            
+            .menu-hero-item h3 {
+                font-size: 1.5rem;
+            }
+            
+            .menu-hero-item .price {
+                font-size: 1.7rem;
+            }
+            
+            .s-menu-section {
+                padding: 3rem 0;
+            }
+            
+            .menu-hero-items {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .drinks-row {
+                justify-content: center;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .category-title {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
 </head>
 
 <body id="top">
-    <header class="main-header">
-        <h1 id="titulo-principal">Restaurant - La Casona</h1>
-    </header>
 
-    <nav class="menu-navegacion">
-        <ul>
-            <li><a href="#bebidas">Bebidas</a></li>
-            <li><a href="#desayunos">Desayunos</a></li>
-            <li><a href="#almuerzos">Almuerzos</a></li>
-            <li><a href="#cenas">Cenas</a></li>
-        </ul>
-    </nav>
-
-    <aside class="promociones">
-        <h3>¡Especialidades del día!</h3>
-        <p>Combina tu menú con nuestras promociones</p>
-    </aside>
-
-    <main>
-    <!-- Especificaciones del Menú -->
-    <section id="especificaciones-menu" class="seccion-especial">
-    <h2>Especificaciones de Elección del Menú</h2>
-
-    <!-- Desayuno -->
-    <article class="especificacion">
-        <h3>Desayuno</h3>
-        <div class="opcion-menu">
-            <h4>Un desayuno principal:</h4>
-            <ul class="lista-seleccion">
-                <li>Café con leche</li>
-                <li>Quaker con manzana</li>
-                <li>Quaker con leche</li>
-                <li>Chocolate</li>
-                <li>Quinua con piña</li>
-                <li>Café</li>
-                <li>Papaya</li>
-                <li>Surtido</li>
-            </ul>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div id="loader" class="dots-fade">
+            <div></div>
+            <div></div>
+            <div></div>
         </div>
-
-        <div class="opcion-menu">
-            <h4>Dos panes con:</h4>
-            <div class="variantes">
-                <p class="regla">◆ Ambos panes pueden tener el mismo relleno, o</p>
-                <p class="regla">◆ Un pan a elección + otro con mantequilla/mermelada</p>
-                <ul class="lista-seleccion">
-                    <li>Tortilla de verduras</li>
-                    <li>Huevo revuelto</li>
-                    <li>Huevo frito</li>
-                    <li>Camote</li>
-                    <li>Jamonada</li>
-                    <li>Pollo</li>
-                </ul>
-            </div>
-        </div>
-    </article>
-
-    <!-- Almuerzo -->
-    <article class="especificacion">
-        <h3>Almuerzo</h3>
-        <div class="opcion-menu">
-            <h4>Incluye:</h4>
-            <ul class="lista-compuesta">
-                <li>
-                    <span class="categoria">Refresco o infusión:</span>
-                    <a href="#bebidas" class="enlace-menu">Elegir de la lista de bebidas</a>
-                </li>
-                <li>
-                    <span class="categoria">Entrada:</span>
-                    <a href="#almuerzos" class="enlace-menu">Seleccionar una entrada</a>
-                </li>
-                <li>
-                    <span class="categoria">Plato de fondo:</span>
-                    <a href="#almuerzos" class="enlace-menu">Elegir plato principal</a>
-                </li>
-                <li>
-                    <span class="categoria">Postre:</span>
-                    <a href="#almuerzos" class="enlace-menu">Seleccionar postre</a>
-                </li>
-            </ul>
-        </div>
-    </article>
-
-    <!-- Cena -->
-    <article class="especificacion">
-        <h3>Cena</h3>
-        <div class="opcion-menu">
-            <h4>Incluye:</h4>
-            <ul class="lista-compuesta">
-                <li>
-                    <span class="categoria">Postre:</span>
-                    <a href="#cenas" class="enlace-menu">Elegir postre de cena</a>
-                </li>
-                <li>
-                    <span class="categoria">Plato de fondo:</span>
-                    <a href="#cenas" class="enlace-menu">Seleccionar plato principal</a>
-                </li>
-                <li>
-                    <span class="categoria">Refresco o infusión:</span>
-                    <a href="#bebidas" class="enlace-menu">Elegir de la lista de bebidas</a>
-                </li>
-            </ul>
-        </div>
-    </article>
-    </section>
-        <!-- Bebidas -->
-        <section id="bebidas" class="seccion-menu">
-            <h2>Infusiones y Refrescos</h2>
-            <article class="categoria">
-                <ul class="lista-items">
-                    <li>Té</li>
-                    <li>Anís</li>
-                    <li>Manzanilla</li>
-                    <li>Chicha morada</li>
-                    <li>Maracuyá</li>
-                    <li>Carambola</li>
-                    <li>Agua de manzana</li>
-                    <li>Cedrón</li>
-                    <li>Toronjil</li>
-                    <li>Agua de cebada</li>
-                </ul>
-            </article>
-        </section>
-
-        <!-- Desayunos -->
-        <section id="desayunos" class="seccion-menu">
-            <h2>Desayunos</h2>
-            <article class="categoria">
-                <h3>Opciones Principales</h3>
-                <ul class="lista-items">
-                    <li>Café con leche</li>
-                    <li>Quaker con manzana</li>
-                    <li>Quaker con leche</li>
-                    <li>Chocolate</li>
-                    <li>Quinua con piña</li>
-                    <li>Café</li>
-                    <li>Papaya</li>
-                    <li>Surtido</li>
-                </ul>
-            </article>
-
-            <article class="categoria">
-                <h3>2 Panes con:</h3>
-                <ul class="lista-items">
-                    <li>Tortilla de verduras</li>
-                    <li>Huevo revuelto</li>
-                    <li>Huevo frito</li>
-                    <li>Mantequilla y mermelada</li>
-                    <li>Camote</li>
-                    <li>Jamonada</li>
-                    <li>Pollo</li>
-                </ul>
-            </article>
-        </section>
-
-<!-- Almuerzos -->
-<section id="almuerzos" class="seccion-menu">
-    <h2>Almuerzos</h2>
-    
-    <!-- Entradas -->
-    <article class="categoria">
-        <h3>Entradas</h3>
-        <div class="grid-comidas">
-            
-            <!-- Papa a la huancaína -->
-            <div class="item-menu">
-                <img src="img/papa-huancaina.jpg" alt="Papa a la huancaína" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Papa a la Huancaína</h4>
-                    <p>Papas amarillas bañadas en salsa cremosa de ají amarillo con queso fresco y huevo duro</p>
-                </div>
-            </div>
-
-            <!-- Ocopa -->
-            <div class="item-menu">
-                <img src="img/ocopa.jpg" alt="Ocopa arequipeña" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Ocopa</h4>
-                    <p>Salsa tradicional de huacatay con nueces, servida con papas cocidas y aceitunas</p>
-                </div>
-            </div>
-
-            <!-- Ensalada de fideo -->
-            <div class="item-menu">
-                <img src="img/ensalada-fideo.jpg" alt="Ensalada de fideo" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Ensalada de Fideo</h4>
-                    <p>Fideos tibios con vegetales frescos, aceitunas y aderezo de limón</p>
-                </div>
-            </div>
-
-            <!-- Resto de entradas (repetir estructura) -->
-            <!-- Crema de rocoto -->
-            <div class="item-menu">
-                <img src="img/crema-rocoto.jpg" alt="Crema de rocoto" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Crema de Rocoto</h4>
-                    <p>Sopa cremosa de rocoto con toque de queso gratinado</p>
-                </div>
-            </div>
-
-            <!-- Sopa de casa -->
-            <div class="item-menu">
-                <img src="img/sopa-casa.jpg" alt="Sopa de casa" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Sopa de Casa</h4>
-                    <p>Caldo reconfortante con fideos, vegetales frescos y hierbas aromáticas</p>
-                </div>
-            </div>
-
-            <!-- Continuar con el mismo patrón para todas las entradas -->
-            
-        </div>
-    </article>
-
-<!-- Platos de Fondo -->
-<article class="categoria">
-    <h3>Platos de Fondo</h3>
-    <div class="grid-comidas">
-        
-        <!-- Arroz con pollo -->
-        <div class="item-menu">
-            <img src="img/arroz-pollo.jpg" alt="Arroz con pollo" class="imagen-plato">
-            <div class="info-plato">
-                <h4>Arroz con Pollo</h4>
-                <p>Arroz verde preparado con cilantro y pechuga de pollo desmenuzada, acompañado de papas doradas</p>
-            </div>
-        </div>
-
-        <!-- Pollo al sillao -->
-        <div class="item-menu">
-            <img src="img/pollo-sillao.jpg" alt="Pollo al sillao" class="imagen-plato">
-            <div class="info-plato">
-                <h4>Pollo al Sillao</h4>
-                <p>Pollo tierno salteado en salsa de sillao con cebolla caramelizada y pimientos asados</p>
-            </div>
-        </div>
-
-        <!-- Asado con puré -->
-        <div class="item-menu">
-            <img src="img/asado-pure.jpg" alt="Asado con puré" class="imagen-plato">
-            <div class="info-plato">
-                <h4>Asado con Puré</h4>
-                <p>Lomo fino asado a la parrilla con puré de papas cremoso y jugo de carne</p>
-            </div>
-        </div>
-
-        <!-- Estofado de pollo -->
-        <div class="item-menu">
-            <img src="img/estofado-pollo.jpg" alt="Estofado de pollo" class="imagen-plato">
-            <div class="info-plato">
-                <h4>Estofado de Pollo</h4>
-                <p>Guiso tradicional con muslos de pollo, zanahorias y arvejas en salsa de tomate casera</p>
-            </div>
-        </div>
-
-        <!-- Frijoles con seco -->
-        <div class="item-menu">
-            <img src="img/frijoles-seco.jpg" alt="Frijoles con seco" class="imagen-plato">
-            <div class="info-plato">
-                <h4>Frijoles con Seco</h4>
-                <p>Frijoles canarios con suave seco de pollo o carne, acompañado de arroz blanco</p>
-            </div>
-        </div>
-
-        <!-- Pollo al horno con ensalada rusa -->
-        <div class="item-menu">
-            <img src="img/pollo-ensalada-rusa.jpg" alt="Pollo al horno" class="imagen-plato">
-            <div class="info-plato">
-                <h4>Pollo al Horno con Ensalada Rusa</h4>
-                <p>Pollo horneado con especias acompañado de ensaladilla rusa clásica</p>
-            </div>
-        </div>
-
-        <!-- Pollo al horno con puré -->
-        <div class="item-menu">
-            <img src="img/pollo-pure.jpg" alt="Pollo con puré" class="imagen-plato">
-            <div class="info-plato">
-                <h4>Pollo al Horno con Puré</h4>
-                <p>Pollo crujiente horneado con puré de papas con mantequilla y hierbas</p>
-            </div>
-        </div>
-
-        <!-- Escabeche de pollo -->
-        <div class="item-menu">
-            <img src="img/escabeche-pollo.jpg" alt="Escabeche de pollo" class="imagen-plato">
-            <div class="info-plato">
-                <h4>Escabeche de Pollo</h4>
-                <p>Pollo marinado en vinagre con cebollas en juliana y camote al horno</p>
-            </div>
-        </div>
-
-        <!-- Guiso de carne -->
-        <div class="item-menu">
-            <img src="img/guiso-carne.jpg" alt="Guiso de carne" class="imagen-plato">
-            <div class="info-plato">
-                <h4>Guiso de Carne</h4>
-                <p>Carne de res tierna guisada con choclo, zanahorias y arroz blanco</p>
-            </div>
-        </div>
-
-        <!-- Ají de gallina -->
-        <div class="item-menu">
-            <img src="img/aji-gallina.jpg" alt="Ají de gallina" class="imagen-plato">
-            <div class="info-plato">
-                <h4>Ají de Gallina</h4>
-                <p>Pollo deshilachado en cremosa salsa de ají amarillo con nueces y aceitunas</p>
-            </div>
-        </div>
-
-        <!-- Arroz chaufa -->
-        <div class="item-menu">
-            <img src="img/arroz-chaufa.jpg" alt="Arroz chaufa" class="imagen-plato">
-            <div class="info-plato">
-                <h4>Arroz Chaufa</h4>
-                <p>Arroz frito estilo chifa con tortilla de huevo, cebollín y carne de pollo</p>
-            </div>
-        </div>
-
     </div>
-</article>
 
-    <!-- Postres -->
-    <article class="categoria">
-        <h3>Postres</h3>
-        <div class="grid-comidas">
-            
-            <!-- Plátano -->
-            <div class="item-menu">
-                <img src="img/platano.jpg" alt="Plátano" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Plátano</h4>
-                    <p>Plátano maduro al natural con miel de caña</p>
+    <div id="page" class="s-pagewrap">
+
+        <div class="menu-underlay"></div>
+        
+        <!-- Header -->
+        <header class="s-header">
+            <div class="s-header__block">
+                <a class="s-header__menu-toggle" href="#0"><span>Navegar</span></a>
+                <div class="s-header__cta">
+                    <a href="Reserva.php" class="btn btn--primary s-header__cta-btn">Reservar</a>
                 </div>
             </div>
 
-            <!-- Manzana -->
-            <div class="item-menu">
-                <img src="img/manzana.jpg" alt="Manzana" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Manzana</h4>
-                    <p>Manzana fresca cortada en gajos con toque de canela</p>
-                </div>
-            </div>
+            <nav class="s-header__nav">
+                <a href="#0" class="s-header__nav-close-btn" title="Cerrar"><span>Cerrar</span></a>
 
-            <!-- Sandía -->
-            <div class="item-menu">
-                <img src="img/sandia.jpg" alt="Sandía" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Sandía</h4>
-                    <p>Jugosos trozos de sandía fría</p>
-                </div>
-            </div>
-
-            <!-- Continuar con todos los postres -->
-            
-        </div>
-    </article>
-</section>
-<!-- Cenas -->
-<section id="cenas" class="seccion-menu">
-    <h2>Cenas</h2>
-    
-    <!-- Platos de Fondo -->
-    <article class="categoria">
-        <h3>Platos de Fondo</h3>
-        <div class="grid-comidas">
-            
-            <!-- Hamburguesa -->
-            <div class="item-menu">
-                <img src="img/hamburguesa.jpg" alt="Hamburguesa" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Hamburguesa con papas fritas y ensalada</h4>
-                    <p>Jugosa hamburguesa casera con queso cheddar, acompañada de papas rústicas y ensalada fresca</p>
-                </div>
-            </div>
-
-            <!-- Pan con hamburguesa -->
-            <div class="item-menu">
-                <img src="img/pan-hamburguesa.jpg" alt="Pan con hamburguesa" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Pan con Hamburguesa y Papas Fritas</h4>
-                    <p>Hamburguesa clásica en pan brioche con salsa especial y papas francesas crujientes</p>
-                </div>
-            </div>
-
-            <!-- Tallarines rojos -->
-            <div class="item-menu">
-                <img src="img/tallarines-rojos.jpg" alt="Tallarines rojos" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Tallarines Rojos con Carne o Pollo</h4>
-                    <p>Pasta al dente con salsa de tomate natural y carne de res o pollo grillé</p>
-                </div>
-            </div>
-
-            <!-- Tallarín saltado -->
-            <div class="item-menu">
-                <img src="img/tallarin-saltado.jpg" alt="Tallarín saltado" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Tallarín Saltado</h4>
-                    <p>Fusión oriental con tallarines salteados con carne, vegetales frescos y salsa de ostión</p>
-                </div>
-            </div>
-
-            <!-- Lomo saltado -->
-            <div class="item-menu">
-                <img src="img/lomo-saltado.jpg" alt="Lomo saltado" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Lomo Saltado</h4>
-                    <p>Clásico peruano con lomito fino, tomate, cebolla y papas fritas al wok</p>
-                </div>
-            </div>
-
-            <!-- Pollo a la francesa -->
-            <div class="item-menu">
-                <img src="img/pollo-francesa.jpg" alt="Pollo a la francesa" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Pollo a la Francesa</h4>
-                    <p>Pechuga empanizada con finas hierbas, acompañada de vegetales al vapor</p>
-                </div>
-            </div>
-
-            <!-- Pollo Broaster -->
-            <div class="item-menu">
-                <img src="img/pollo-broaster.jpg" alt="Pollo Broaster" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Pollo Broaster con Papas Fritas y Arroz</h4>
-                    <p>Pollo crujiente horneado con especias, papas doradas y arroz blanco</p>
-                </div>
-            </div>
-
-        </div>
-    </article>
-
-    <!-- Postres -->
-    <article class="categoria">
-        <h3>Postres</h3>
-        <div class="grid-comidas">
-            
-            <!-- Pudín de chocolate -->
-            <div class="item-menu">
-                <img src="img/pudin-chocolate.jpg" alt="Pudín de chocolate" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Pudín de Chocolate</h4>
-                    <p>Postre cremoso en capas con salsa de chocolate negro y galleta molida</p>
-                </div>
-            </div>
-
-            <!-- Flan -->
-            <div class="item-menu">
-                <img src="img/flan.jpg" alt="Flan" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Flan</h4>
-                    <p>Clásico postre de huevo con caramelo líquido y decoración de frutos rojos</p>
-                </div>
-            </div>
-
-            <!-- Gelatina -->
-            <div class="item-menu">
-                <img src="img/gelatina.jpg" alt="Gelatina" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Gelatina</h4>
-                    <p>Gelatina multicolor en capas con frutas tropicales frescas</p>
-                </div>
-            </div>
-
-            <!-- Mazamorra morada -->
-            <div class="item-menu">
-                <img src="img/mazamorra-morada.jpg" alt="Mazamorra morada" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Mazamorra Morada</h4>
-                    <p>Dulce tradicional de maíz morado con trozos de fruta deshidratada</p>
-                </div>
-            </div>
-
-            <!-- Arroz con leche -->
-            <div class="item-menu">
-                <img src="img/arroz-leche.jpg" alt="Arroz con leche" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Arroz con Leche</h4>
-                    <p>Postre cremoso de arroz con canela y pasas, servido tibio</p>
-                </div>
-            </div>
-
-            <!-- Torta de chocolate -->
-            <div class="item-menu">
-                <img src="img/torta-chocolate.jpg" alt="Torta de chocolate" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Torta de Chocolate</h4>
-                    <p>Torta triple capa con relleno de ganache y cubierta de chocolate semiamargo</p>
-                </div>
-            </div>
-
-            <!-- Torta de limón -->
-            <div class="item-menu">
-                <img src="img/torta-limon.jpg" alt="Torta de limón" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Torta de Limón</h4>
-                    <p>Bizcocho esponjoso con relleno de crema de limón y merengue italiano</p>
-                </div>
-            </div>
-
-            <!-- Alfajores -->
-            <div class="item-menu">
-                <img src="img/alfajores.jpg" alt="Alfajores" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Alfajores</h4>
-                    <p>Galletas rellenas de manjar blanco espolvoreadas con azúcar glass</p>
-                </div>
-            </div>
-
-            <!-- Mazamorra de piña -->
-            <div class="item-menu">
-                <img src="img/mazamorra-piña.jpg" alt="Mazamorra de piña" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Mazamorra de Piña</h4>
-                    <p>Postre refrescante de piña caramelizada con canela y clavo de olor</p>
-                </div>
-            </div>
-
-            <!-- Sandía -->
-            <div class="item-menu">
-                <img src="img/sandia-postre.jpg" alt="Sandía" class="imagen-plato">
-                <div class="info-plato">
-                    <h4>Sandía</h4>
-                    <p>Frescos trozos de sandía fría con toque de menta y limón</p>
-                </div>
-            </div>
-
-        </div>
-    </article>
-</section>
-    </main>
-
-    <!--Footer-->
-    <footer id="footer" class="s-footer">
-
-        <div class="row s-footer__top row-x-center">
-            <div class="column xl-4 lg-6 tab-8 mob-12">
-                <a href="Reserva.html" class="btn btn--primary btn--large u-fullwidth">Reservar una mesa</a>
-            </div>
-        </div>
-
-        <div class="row s-footer__main-content">
-
-            <div class="column xl-6 md-12 s-footer__block s-footer__about">
-                <div class="s-footer__logo">
-                    <a class="logo" href="Index.html">
-                        <img src="MULTIMEDIA/LOGO/LOGO.jpg" alt="Página de inicio">
+                <div class="s-header__nav-logo">
+                    <a href="Index.html">
+                        <img src="assets/imagenes/LOGO/LOGO.jpg" alt="Página de inicio">
                     </a>
                 </div>
 
-                <p>La Casona es el lugar perfecto para disfrutar de platos deliciosos en un ambiente acogedor. Te esperamos con la mejor atención y sabores únicos.</p>
-            </div>
+                <ul class="s-header__nav-links">
+                    <li><a href="Index.html">Inicio</a></li>
+                    <li class="current"><a href="Carta.html">Carta</a></li>
+                    <li><a href="About.html">Acerca de</a></li>
+                    <li><a href="Reserva.php">Reservaciones</a></li>
+                </ul>
 
-            <div class="column xl-6 md-12 s-footer__block s-footer__info">
-                <div class="row">
-                    <div class="column xl-6 lg-12">
-                        <h5>Ubicación</h5>
-                        <p>
-                        Antigua panamericana, <br>
-                        Club Kawai Unión Biblíca del Perú - km 88.8
-                        </p>
+                <div class="s-header__nav-bottom">
+                    <h6>Solicitud de Reserva</h6>
+                    <div class="s-header__booking">
+                        <div class="s-header__booking-no"><a href="tel:+51980436234">+51 980 436 234</a></div>
                     </div>
-                    <div class="column xl-6 lg-12">
-                        <h5>Contactos</h5>
-                        <ul class="link-list">
-                            <li><a href="casonaKawai@gmail.com">casonaKawai@gmail.com</a></li>
-                            <li><a href="tel:+51980436234">+51 980 436 234</a></li>
+
+                    <ul class="s-header__nav-social social-list">
+                        <li>
+                            <a href="https://www.facebook.com/unionbiblicadelperu" target="_blank">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:rgba(0, 0, 0, 1);">
+                                    <path d="M20,3H4C3.447,3,3,3.448,3,4v16c0,0.552,0.447,1,1,1h8.615v-6.96h-2.338v-2.725h2.338v-2c0-2.325,1.42-3.592,3.5-3.592 
+                                        c0.699-0.002,1.399,0.034,2.095,0.107v2.42h-1.435c-1.128,0-1.348,0.538-1.348,1.325v1.735h2.697l-0.35,2.725h-2.348V21H20 
+                                        c0.553,0,1-0.448,1-1V4C21,3.448,20.553,3,20,3z"></path>
+                                </svg>
+                                <span class="u-screen-reader-text">Facebook</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://wa.me/+51980436234" target="_blank">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M17.472 14.51c-.292-.147-1.728-.853-1.995-.95-.266-.098-.46-.147-.654.147-.196.293-.75.95-.92 1.147-.17.196-.34.22-.632.073-.292-.146-1.233-.455-2.35-1.45-.867-.773-1.45-1.732-1.617-2.024-.17-.293-.017-.45.13-.598.133-.132.292-.34.437-.51.146-.17.196-.293.292-.487.097-.196.05-.366-.024-.51-.073-.146-.654-1.593-.896-2.182-.236-.568-.477-.49-.654-.5h-.555c-.196 0-.51.073-.776.366-.266.293-1.017.996-1.017 2.43s1.042 2.82 1.188 3.013c.147.195 2.04 3.115 4.946 4.243.69.298 1.227.475 1.646.608.692.22 1.323.189 1.82.114.555-.085 1.728-.707 1.97-1.39.243-.683.243-1.268.17-1.39-.073-.121-.266-.194-.555-.34z"/>
+                                    <path d="M12 2C6.485 2 2 6.485 2 12c0 1.85.503 3.68 1.457 5.265L2 22l4.956-1.243A9.947 9.947 0 0012 22c5.515 0 10-4.485 10-10S17.515 2 12 2zm0 18c-1.63 0-3.228-.433-4.606-1.252l-.331-.195-2.945.736.79-2.798-.212-.336A7.925 7.925 0 014 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"/>
+                                </svg>
+                                <span class="u-screen-reader-text">WhatsApp</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="s-intro">
+            <div class="s-intro__bg"></div>
+            <div class="row s-intro__content">
+                <div class="column xl-12">
+                    <div class="s-intro__pretitle">Descubre</div>
+                    <h1 class="s-intro__title">Nuestra Carta</h1>
+                    <p class="s-intro__desc lead">
+                        Explora nuestra selección de platos tradicionales peruanos, 
+                        preparados con ingredientes frescos y de la más alta calidad.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menús Principales -->
+        <section class="s-menu-hero">
+            <div class="row">
+                <div class="column xl-12">
+                    <div class="menu-hero-content">
+                        <div class="section-header">
+                            <h2 class="section-title fade-in-up">Nuestros Menús</h2>
+                            <p class="attention-getter fade-in-up">
+                                Disfruta de nuestras opciones de desayuno, almuerzo y cena, 
+                                cada una diseñada para brindarte una experiencia gastronómica completa.
+                            </p>
+                        </div>
+
+                        <div class="menu-hero-items">
+                            <a href="#desayunos" class="menu-hero-item fade-in-left">
+                                <h3>DESAYUNO</h3>
+                                <p class="subtitle">Comienza tu día con energía</p>
+                                <div class="price">S/ 9<span style="font-size: 0.6em;">.00</span></div>
+                                <p class="description">Incluye bebida + 2 panes</p>
+                            </a>
+
+                            <a href="#almuerzos" class="menu-hero-item fade-in-up">
+                                <h3>ALMUERZO</h3>
+                                <p class="subtitle">Experiencia gastronómica completa</p>
+                                <div class="price">S/ 14<span style="font-size: 0.6em;">.50</span></div>
+                                <p class="description">Entrada + Plato + Postre + Bebida</p>
+                            </a>
+
+                            <a href="#cenas" class="menu-hero-item fade-in-right">
+                                <h3>CENA</h3>
+                                <p class="subtitle">Termina tu día con sabores únicos</p>
+                                <div class="price">S/ 16<span style="font-size: 0.6em;">.50</span></div>
+                                <p class="description">Plato + Postre + Bebida</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bebidas Section -->
+        <section id="bebidas" class="s-menu-section">
+            <div class="row">
+                <div class="column xl-12">
+                    <h2 class="section-title fade-in-up">BEBIDAS</h2>
+            
+                    <div class="menu-category">
+                        <h3 class="category-title fade-in-left">INFUSIONES Y REFRESCOS</h3>
+                        <div class="drinks-list fade-in-up">
+                            <ul class="drinks-simple-list">
+                                <li>Té</li>
+                                <li>Anís</li>
+                                <li>Manzanilla</li>
+                                <li>Chicha morada</li>
+                                <li>Maracuyá</li>
+                                <li>Carambola</li>
+                                <li>Agua de manzana</li>
+                                <li>Cedrón</li>
+                                <li>Toronjil</li>
+                                <li>Agua de cebada</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Desayunos Section -->
+        <section id="desayunos" class="s-menu-section">
+            <div class="row">
+                <div class="column xl-12">
+                    <h2 class="section-title fade-in-up">DESAYUNOS</h2>
+                    
+                    <div class="menu-category">
+                        <h3 class="category-title fade-in-left">BEBIDAS PRINCIPALES</h3>
+                        <ul class="menu-items-list stagger-animation">
+                            <li class="menu-item">
+                                <h4>Café con leche</h4>
+                                <p>Café aromático con leche fresca y espuma cremosa</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Quaker con manzana</h4>
+                                <p>Avena nutritiva con trozos de manzana fresca y canela</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Quaker con leche</h4>
+                                <p>Avena cremosa preparada con leche fresca</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Chocolate caliente</h4>
+                                <p>Chocolate espeso y cremoso preparado de forma tradicional</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Quinua con piña</h4>
+                                <p>Quinua nutritiva con trozos de piña fresca</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Café</h4>
+                                <p>Café negro aromático de grano seleccionado</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Papaya</h4>
+                                <p>Jugo natural de papaya fresca</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Surtido</h4>
+                                <p>Combinación especial de frutas de temporada</p>
+                            </li>
                         </ul>
                     </div>
-                    <div class="column">
-                        <h5>Horario de Atención</h5>
-                        <ul class="opening-hours">
-                            <li><span class="opening-hours__days">De lunes a domingo</span><span class="opening-hours__time"> 7:00am - 12:00am</span></li>
+
+                    <div class="menu-category">
+                        <h3 class="category-title fade-in-right">2 PANES CON:</h3>
+                        <div class="menu-note">
+                            <p><strong>Nota:</strong> Ambos panes pueden tener el mismo relleno, o un pan a elección + otro con mantequilla/mermelada</p>
+                        </div>
+                        <ul class="menu-items-list stagger-animation">
+                            <li class="menu-item">
+                                <h4>Tortilla de verduras</h4>
+                                <p>Pan fresco con tortilla casera de verduras mixtas</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Huevo revuelto</h4>
+                                <p>Pan con huevos revueltos cremosos y especias</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Huevo frito</h4>
+                                <p>Pan con huevo frito dorado y perfectamente cocido</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Camote</h4>
+                                <p>Pan con camote dulce cocido y especias</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Jamonada</h4>
+                                <p>Pan con jamonada casera y vegetales frescos</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Pollo</h4>
+                                <p>Pan con pollo desmenuzado y condimentos especiales</p>
+                            </li>
                         </ul>
                     </div>
                 </div>
             </div>
+        </section>
 
-        </div>
+        <!-- Almuerzos Section -->
+        <section id="almuerzos" class="s-menu-section">
+            <div class="row">
+                <div class="column xl-12">
+                    <h2 class="section-title fade-in-up">ALMUERZOS</h2>
+                    
+                    <div class="menu-category">
+                        <h3 class="category-title fade-in-left">ENTRADAS</h3>
+                        <ul class="menu-items-list stagger-animation">
+                            <li class="menu-item">
+                                <h4>Papa a la Huancaína</h4>
+                                <p>Papas amarillas bañadas en salsa cremosa de ají amarillo con queso fresco y huevo duro</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Ocopa</h4>
+                                <p>Salsa tradicional de huacatay con nueces, servida con papas cocidas y aceitunas</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Ensalada de Fideo</h4>
+                                <p>Fideos tibios con vegetales frescos, aceitunas y aderezo de limón</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Crema de Rocoto</h4>
+                                <p>Sopa cremosa de rocoto con toque de queso gratinado</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Sopa de Casa</h4>
+                                <p>Caldo reconfortante con fideos, vegetales frescos y hierbas aromáticas</p>
+                            </li>
+                        </ul>
+                    </div>
 
-        <div class="row s-footer__bottom">
+                    <div class="menu-category">
+                        <h3 class="category-title fade-in-right">PLATOS DE FONDO</h3>
+                        <ul class="menu-items-list stagger-animation">
+                            <li class="menu-item">
+                                <h4>Arroz con Pollo</h4>
+                                <p>Arroz verde preparado con cilantro y pechuga de pollo desmenuzada, acompañado de papas doradas</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Pollo al Sillao</h4>
+                                <p>Pollo tierno salteado en salsa de sillao con cebolla caramelizada y pimientos asados</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Asado con Puré</h4>
+                                <p>Lomo fino asado a la parrilla con puré de papas cremoso y jugo de carne</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Estofado de Pollo</h4>
+                                <p>Guiso tradicional con muslos de pollo, zanahorias y arvejas en salsa de tomate casera</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Ají de Gallina</h4>
+                                <p>Pollo deshilachado en cremosa salsa de ají amarillo con nueces y aceitunas</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Arroz Chaufa</h4>
+                                <p>Arroz frito estilo chifa con tortilla de huevo, cebollín y carne de pollo</p>
+                            </li>
+                        </ul>
+                    </div>
 
-            <div class="column xl-6 lg-12">
-                <ul class="s-footer__social social-list">
-                    <li>
-                        <a href="https://www.facebook.com/unionbiblicadelperu" target="_blank">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:rgba(0, 0, 0, 1);">
-                                <path d="M20,3H4C3.447,3,3,3.448,3,4v16c0,0.552,0.447,1,1,1h8.615v-6.96h-2.338v-2.725h2.338v-2c0-2.325,1.42-3.592,3.5-3.592 
-                                    c0.699-0.002,1.399,0.034,2.095,0.107v2.42h-1.435c-1.128,0-1.348,0.538-1.348,1.325v1.735h2.697l-0.35,2.725h-2.348V21H20 
-                                    c0.553,0,1-0.448,1-1V4C21,3.448,20.553,3,20,3z"></path></svg>
-                            <span class="u-screen-reader-text">Facebook</span>
+                    <div class="menu-category">
+                        <h3 class="category-title fade-in-up">POSTRES</h3>
+                        <ul class="menu-items-list stagger-animation">
+                            <li class="menu-item">
+                                <h4>Plátano</h4>
+                                <p>Plátano maduro al natural con miel de caña</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Manzana</h4>
+                                <p>Manzana fresca cortada en gajos con toque de canela</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Sandía</h4>
+                                <p>Jugosos trozos de sandía fría</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cenas Section -->
+        <section id="cenas" class="s-menu-section">
+            <div class="row">
+                <div class="column xl-12">
+                    <h2 class="section-title fade-in-up">CENAS</h2>
+                    
+                    <div class="menu-category">
+                        <h3 class="category-title fade-in-left">PLATOS PRINCIPALES</h3>
+                        <ul class="menu-items-list stagger-animation">
+                            <li class="menu-item">
+                                <h4>Hamburguesa Completa</h4>
+                                <p>Jugosa hamburguesa casera con queso cheddar, acompañada de papas rústicas y ensalada fresca</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Pan con Hamburguesa</h4>
+                                <p>Hamburguesa clásica en pan brioche con salsa especial y papas francesas crujientes</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Tallarines Rojos</h4>
+                                <p>Pasta al dente con salsa de tomate natural y carne de res o pollo grillé</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Tallarín Saltado</h4>
+                                <p>Fusión oriental con tallarines salteados con carne, vegetales frescos y salsa de ostión</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Lomo Saltado</h4>
+                                <p>Clásico peruano con lomito fino, tomate, cebolla y papas fritas al wok</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Pollo Broaster</h4>
+                                <p>Pollo crujiente horneado con especias, papas doradas y arroz blanco</p>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="menu-category">
+                        <h3 class="category-title fade-in-right">POSTRES</h3>
+                        <ul class="menu-items-list stagger-animation">
+                            <li class="menu-item">
+                                <h4>Pudín de Chocolate</h4>
+                                <p>Postre cremoso en capas con salsa de chocolate negro y galleta molida</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Flan</h4>
+                                <p>Clásico postre de huevo con caramelo líquido y decoración de frutos rojos</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Mazamorra Morada</h4>
+                                <p>Dulce tradicional de maíz morado con trozos de fruta deshidratada</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Arroz con Leche</h4>
+                                <p>Postre cremoso de arroz con canela y pasas, servido tibio</p>
+                            </li>
+                            <li class="menu-item">
+                                <h4>Torta de Chocolate</h4>
+                                <p>Torta triple capa con relleno de ganache y cubierta de chocolate semiamargo</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer id="footer" class="s-footer">
+            <div class="row s-footer__main-content">
+                <div class="column xl-6 md-12 s-footer__block s-footer__about">
+                    <div class="s-footer__logo">
+                        <a class="logo" href="Index.html">
+                            <img src="assets/imagenes/LOGO/LOGO.jpg" alt="Página de inicio">
                         </a>
-                    </li>
-                    <li>
-                        <a href="https://wa.me/+51980436234" target="_blank">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M17.472 14.51c-.292-.147-1.728-.853-1.995-.95-.266-.098-.46-.147-.654.147-.196.293-.75.95-.92 1.147-.17.196-.34.22-.632.073-.292-.146-1.233-.455-2.35-1.45-.867-.773-1.45-1.732-1.617-2.024-.17-.293-.017-.45.13-.598.133-.132.292-.34.437-.51.146-.17.196-.293.292-.487.097-.196.05-.366-.024-.51-.073-.146-.654-1.593-.896-2.182-.236-.568-.477-.49-.654-.5h-.555c-.196 0-.51.073-.776.366-.266.293-1.017.996-1.017 2.43s1.042 2.82 1.188 3.013c.147.195 2.04 3.115 4.946 4.243.69.298 1.227.475 1.646.608.692.22 1.323.189 1.82.114.555-.085 1.728-.707 1.97-1.39.243-.683.243-1.268.17-1.39-.073-.121-.266-.194-.555-.34z"/>
-                                <path d="M12 2C6.485 2 2 6.485 2 12c0 1.85.503 3.68 1.457 5.265L2 22l4.956-1.243A9.947 9.947 0 0012 22c5.515 0 10-4.485 10-10S17.515 2 12 2zm0 18c-1.63 0-3.228-.433-4.606-1.252l-.331-.195-2.945.736.79-2.798-.212-.336A7.925 7.925 0 014 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"/></svg>
-                            <span class="u-screen-reader-text">WhatsApp</span>
-                        </a>
-                    </li>
-                </ul>
+                    </div>
+                    <p>La Casona es el lugar perfecto para disfrutar de platos deliciosos en un ambiente acogedor. Te esperamos con la mejor atención y sabores únicos.</p>
+                </div>
+
+                <div class="column xl-6 md-12 s-footer__block s-footer__info">
+                    <div class="row">
+                        <div class="column xl-6 lg-12">
+                            <h5>Ubicación</h5>
+                            <p>
+                            Antigua panamericana, <br>
+                            Club Kawai Unión Biblíca del Perú - km 88.8
+                            </p>
+                        </div>
+                        <div class="column xl-6 lg-12">
+                            <h5>Contactos</h5>
+                            <ul class="link-list">
+                                <li><a href="mailto:casonaKawai@gmail.com">casonaKawai@gmail.com</a></li>
+                                <li><a href="tel:+51980436234">+51 980 436 234</a></li>
+                            </ul>
+                        </div>
+                        <div class="column">
+                            <h5>Horarios de Atención</h5>
+                            <ul class="opening-hours">
+                                <li><span class="opening-hours__days">De lunes a domingo</span><span class="opening-hours__time"> 7:00am - 12:00am</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="column xl-6 lg-12">
-                <p class="ss-copyright">
-                    <span>© Copyright Kawaii 2025</span>
-                </p>
+            <div class="row s-footer__bottom">
+                <div class="column xl-6 lg-12">
+                    <ul class="s-footer__social social-list">
+                        <li>
+                            <a href="https://www.facebook.com/unionbiblicadelperu" target="_blank">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:rgba(0, 0, 0, 1);">
+                                    <path d="M20,3H4C3.447,3,3,3.448,3,4v16c0,0.552,0.447,1,1,1h8.615v-6.96h-2.338v-2.725h2.338v-2c0-2.325,1.42-3.592,3.5-3.592 
+                                        c0.699-0.002,1.399,0.034,2.095,0.107v2.42h-1.435c-1.128,0-1.348,0.538-1.348,1.325v1.735h2.697l-0.35,2.725h-2.348V21H20 
+                                        c0.553,0,1-0.448,1-1V4C21,3.448,20.553,3,20,3z"></path>
+                                </svg>
+                                <span class="u-screen-reader-text">Facebook</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://wa.me/+51980436234" target="_blank">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M17.472 14.51c-.292-.147-1.728-.853-1.995-.95-.266-.098-.46-.147-.654.147-.196.293-.75.95-.92 1.147-.17.196-.34.22-.632.073-.292-.146-1.233-.455-2.35-1.45-.867-.773-1.45-1.732-1.617-2.024-.17-.293-.017-.45.13-.598.133-.132.292-.34.437-.51.146-.17.196-.293.292-.487.097-.196.05-.366-.024-.51-.073-.146-.654-1.593-.896-2.182-.236-.568-.477-.49-.654-.5h-.555c-.196 0-.51.073-.776.366-.266.293-1.017.996-1.017 2.43s1.042 2.82 1.188 3.013c.147.195 2.04 3.115 4.946 4.243.69.298 1.227.475 1.646.608.692.22 1.323.189 1.82.114.555-.085 1.728-.707 1.97-1.39.243-.683.243-1.268.17-1.39-.073-.121-.266-.194-.555-.34z"/>
+                                    <path d="M12 2C6.485 2 2 6.485 2 12c0 1.85.503 3.68 1.457 5.265L2 22l4.956-1.243A9.947 9.947 0 0012 22c5.515 0 10-4.485 10-10S17.515 2 12 2zm0 18c-1.63 0-3.228-.433-4.606-1.252l-.331-.195-2.945.736.79-2.798-.212-.336A7.925 7.925 0 014 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"/>
+                                </svg>
+                                <span class="u-screen-reader-text">WhatsApp</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="column xl-6 lg-12">
+                    <p class="ss-copyright">
+                        <span>© Copyright Kawaii 2025</span>
+                    </p>
+                </div>
             </div>
 
-        </div>
+            <div class="ss-go-top">
+                <a class="smoothscroll" title="Volver arriba" href="#top">
+                    <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.523 18.787s4.501-4.505 6.255-6.26c.146-.146.219-.338.219-.53s-.073-.383-.219-.53c-1.753-1.754-6.255-6.258-6.255-6.258-.144-.145-.334-.217-.524-.217-.193 0-.385.074-.532.221-.293.292-.295.766-.004 1.056l4.978 4.978h-14.692c-.414 0-.75.336-.75.75s.336.75.75.75h14.692l-4.979 4.979c-.289.289-.286.762.006 1.054.148.148.341.222.533.222.19 0 .378-.072.522-.215z" fill-rule="nonzero"/></svg>
+                </a>
+                <span>Volver arriba</span>
+            </div>
+        </footer>
 
-        <div class="ss-go-top">
-            <a class="smoothscroll" title="Volver arriba" href="#top">
-                <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.523 18.787s4.501-4.505 6.255-6.26c.146-.146.219-.338.219-.53s-.073-.383-.219-.53c-1.753-1.754-6.255-6.258-6.255-6.258-.144-.145-.334-.217-.524-.217-.193 0-.385.074-.532.221-.293.292-.295.766-.004 1.056l4.978 4.978h-14.692c-.414 0-.75.336-.75.75s.336.75.75.75h14.692l-4.979 4.979c-.289.289-.286.762.006 1.054.148.148.341.222.533.222.19 0 .378-.072.522-.215z" fill-rule="nonzero"/></svg>
-            </a>
-            <span>Volver arriba</span>
-        </div>
+    </div>
 
-    </footer>
+    <!-- JavaScript -->
+    <script src="../assets/js/Complementos.js"></script>
+    <script src="../assets/js/Main.js"></script>
 
-    <script src="js/plugins.js"></script>
-    <script src="js/main.js"></script>
+    <script>
+        // Animaciones rápidas al hacer scroll
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.fade-in-up, .fade-in-left, .fade-in-right, .stagger-animation .menu-item');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -30px 0px'
+            });
+
+            elements.forEach(element => {
+                observer.observe(element);
+            });
+        }
+
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Scroll suave para todos los enlaces internos
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            animateOnScroll();
+        });
+
+        // Trigger inicial para elementos visibles
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const visibleElements = document.querySelectorAll('.fade-in-up, .fade-in-left, .fade-in-right');
+                visibleElements.forEach(element => {
+                    const rect = element.getBoundingClientRect();
+                    if (rect.top < window.innerHeight && rect.bottom > 0) {
+                        element.classList.add('animate');
+                    }
+                });
+            }, 100);
+        });
+    </script>
 
 </body>
 </html>

@@ -10,21 +10,212 @@
         document.documentElement.classList.add('js');
     </script>
 
-    <link rel="stylesheet" href="../assets/css/proveedor.css">
-    <link rel="stylesheet" href="../assets/css/estilo.css">
-
+    <link rel="stylesheet" href="assets/css/proveedor.css">
+    <link rel="stylesheet" href="assets/css/estilo.css">
 
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/imagenes/LOGO/Logo-apple.png">
     <link rel="Logo-32x32" type="image/png" sizes="32x32" href="/assets/imagenes/LOGO/Logo-32x32.png">
     <link rel="Logo-16x16" type="image/png" sizes="16x16" href="/assets/imagenes/LOGO/Logo-16x16.png">
     <link rel="manifest" href="site.webmanifest">
 
+    <style>
+    /* ===== ANIMACIONES ESPECÍFICAS PARA INDEX.HTML ===== */
+    /* Estas animaciones tienen prioridad sobre las del CSS externo */
+    
+    /* Animaciones básicas mejoradas */
+    .animate-fade-in {
+        opacity: 0 !important;
+        transform: translateY(40px) !important;
+        transition: all 0.8s ease-out !important;
+    }
+
+    .animate-fade-in.animate {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+
+    .animate-fade-in-left {
+        opacity: 0 !important;
+        transform: translateX(-60px) !important;
+        transition: all 0.8s ease-out !important;
+    }
+
+    .animate-fade-in-left.animate {
+        opacity: 1 !important;
+        transform: translateX(0) !important;
+    }
+
+    .animate-fade-in-right {
+        opacity: 0 !important;
+        transform: translateX(60px) !important;
+        transition: all 0.8s ease-out !important;
+    }
+
+    .animate-fade-in-right.animate {
+        opacity: 1 !important;
+        transform: translateX(0) !important;
+    }
+
+    .animate-scale-in {
+        opacity: 0 !important;
+        transform: scale(0.8) !important;
+        transition: all 0.8s ease-out !important;
+    }
+
+    .animate-scale-in.animate {
+        opacity: 1 !important;
+        transform: scale(1) !important;
+    }
+
+    .animate-slide-up {
+        opacity: 0 !important;
+        transform: translateY(50px) !important;
+        transition: all 0.7s ease-out !important;
+    }
+
+    .animate-slide-up.animate {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+
+    /* Animaciones específicas para el hero - SIN CONFLICTOS */
+    .hero-intro-pretitle {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: heroFadeInUp 1s ease-out 0.3s forwards;
+    }
+
+    .hero-intro-title {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: heroFadeInUp 1s ease-out 0.6s forwards;
+    }
+
+    .hero-intro-desc {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: heroFadeInUp 1s ease-out 0.9s forwards;
+    }
+
+    .hero-intro-scroll {
+        opacity: 0;
+        animation: heroFadeInUp 1s ease-out 1.2s forwards;
+    }
+
+    @keyframes heroFadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Animaciones para imágenes - ESPECÍFICAS */
+    .animate-image {
+        opacity: 0 !important;
+        transform: scale(0.9) rotate(2deg) !important;
+        transition: all 0.8s ease-out !important;
+    }
+
+    .animate-image.animate {
+        opacity: 1 !important;
+        transform: scale(1) rotate(0deg) !important;
+    }
+
+    /* Hover effects mejorados */
+    .menublock-item__thumb img,
+    .gallery-items__item-thumb img,
+    .s-about__media-big,
+    .s-about__media-small {
+        transition: transform 0.4s ease, filter 0.4s ease !important;
+    }
+
+    .menublock-item:hover .menublock-item__thumb img,
+    .gallery-items__item:hover img {
+        transform: scale(1.05) !important;
+        filter: brightness(1.1) !important;
+    }
+
+    .s-about__media-big:hover,
+    .s-about__media-small:hover {
+        transform: scale(1.05) !important;
+        filter: brightness(1.1) !important;
+    }
+
+    /* Animaciones escalonadas para galería - ESPECÍFICAS */
+    .gallery-items__item {
+        opacity: 0 !important;
+        transform: translateY(30px) scale(0.9) !important;
+        transition: all 0.6s ease-out !important;
+    }
+
+    .gallery-items__item.animate {
+        opacity: 1 !important;
+        transform: translateY(0) scale(1) !important;
+    }
+
+    .gallery-items__item:nth-child(1) { transition-delay: 0.1s !important; }
+    .gallery-items__item:nth-child(2) { transition-delay: 0.2s !important; }
+    .gallery-items__item:nth-child(3) { transition-delay: 0.3s !important; }
+    .gallery-items__item:nth-child(4) { transition-delay: 0.4s !important; }
+    .gallery-items__item:nth-child(5) { transition-delay: 0.5s !important; }
+    .gallery-items__item:nth-child(6) { transition-delay: 0.6s !important; }
+    .gallery-items__item:nth-child(7) { transition-delay: 0.7s !important; }
+    .gallery-items__item:nth-child(8) { transition-delay: 0.8s !important; }
+
+    /* Animaciones para slides del menú - ESPECÍFICAS */
+    .menu-slide-animate {
+        opacity: 0 !important;
+        transform: translateY(30px) !important;
+        transition: all 0.6s ease-out !important;
+    }
+
+    .menu-slide-animate.animate {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+
+    .menu-slide-animate:nth-child(1) { transition-delay: 0.1s !important; }
+    .menu-slide-animate:nth-child(2) { transition-delay: 0.2s !important; }
+    .menu-slide-animate:nth-child(3) { transition-delay: 0.3s !important; }
+    .menu-slide-animate:nth-child(4) { transition-delay: 0.4s !important; }
+
+    /* Efectos adicionales para botones y enlaces */
+    .btn {
+        transition: all 0.3s ease !important;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    /* Animación para iconos sociales */
+    .social-list a {
+        transition: all 0.3s ease !important;
+    }
+
+    .social-list a:hover {
+        transform: translateY(-3px) scale(1.1) !important;
+    }
+
+    /* Responsive adjustments */
+    @media screen and (max-width: 768px) {
+        .animate-fade-in-left,
+        .animate-fade-in-right {
+            transform: translateY(30px) !important;
+        }
+        
+        .animate-fade-in-left.animate,
+        .animate-fade-in-right.animate {
+            transform: translateY(0) !important;
+        }
+    }
+</style>
 </head>
 
 <body id="top">
 
     <!--Precarga-->
-
     <div id="preloader">
         <div id="loader" class="dots-fade">
             <div></div>
@@ -38,25 +229,19 @@
         <div class="menu-underlay"></div>
         
         <header class="s-header">
-
             <div class="s-header__block">
-
-
                 <a class="s-header__menu-toggle" href="#0"><span>Navegar</span></a>
-
                 <div class="s-header__cta">
                     <a href="Reserva.php" class="btn btn--primary s-header__cta-btn">Reservar</a>
                 </div>
-
             </div>
 
             <nav class="s-header__nav">
-                
                 <a href="#0" class="s-header__nav-close-btn" title="Cerrar"><span>Cerrar</span></a>
 
                 <div class="s-header__nav-logo">
                     <a href="Index.html">
-                        <img src="../assets/imagenes/LOGO/LOGO.jpg" alt="Página de inicio">
+                        <img src="assets/imagenes/LOGO/LOGO.jpg" alt="Página de inicio">
                     </a>
                 </div>
 
@@ -64,13 +249,11 @@
                     <li class="current"><a href="Index.html">Inicio</a></li>
                     <li><a href="Carta.html">Carta</a></li>
                     <li><a href="About.html">Acerca de</a></li>
-                    <li><a href="../Reserva.php">Reservaciones</a></li>
+                    <li><a href="Reserva.php">Reservaciones</a></li>
                 </ul>
 
                 <div class="s-header__nav-bottom">
-
                     <h6>Solicitud de Reserva</h6>
-
                     <div class="s-header__booking">
                         <div class="s-header__booking-no"><a href="tel:+51980436234">+51 980 436 234</a></div>
                     </div>
@@ -88,7 +271,8 @@
                             <a href="https://wa.me/+51980436234" target="_blank">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M17.472 14.51c-.292-.147-1.728-.853-1.995-.95-.266-.098-.46-.147-.654.147-.196.293-.75.95-.92 1.147-.17.196-.34.22-.632.073-.292-.146-1.233-.455-2.35-1.45-.867-.773-1.45-1.732-1.617-2.024-.17-.293-.017-.45.13-.598.133-.132.292-.34.437-.51.146-.17.196-.293.292-.487.097-.196.05-.366-.024-.51-.073-.146-.654-1.593-.896-2.182-.236-.568-.477-.49-.654-.5h-.555c-.196 0-.51.073-.776.366-.266.293-1.017.996-1.017 2.43s1.042 2.82 1.188 3.013c.147.195 2.04 3.115 4.946 4.243.69.298 1.227.475 1.646.608.692.22 1.323.189 1.82.114.555-.085 1.728-.707 1.97-1.39.243-.683.243-1.268.17-1.39-.073-.121-.266-.194-.555-.34z"/>
-                                    <path d="M12 2C6.485 2 2 6.485 2 12c0 1.85.503 3.68 1.457 5.265L2 22l4.956-1.243A9.947 9.947 0 0012 22c5.515 0 10-4.485 10-10S17.515 2 12 2zm0 18c-1.63 0-3.228-.433-4.606-1.252l-.331-.195-2.945.736.79-2.798-.212-.336A7.925 7.925 0 014 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"/></svg>
+                                    <path d="M12 2C6.485 2 2 6.485 2 12c0 1.85.503 3.68 1.457 5.265L2 22l4.956-1.243A9.947 9.947 0 0012 22c5.515 0 10-4.485 10-10S17.515 2 12 2zm0 18c-1.63 0-3.228-.433-4.606-1.252l-.331-.195-2.945.736.79-2.798-.212-.336A7.925 7.925 0 014 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"/>
+                                </svg>
                                 <span class="u-screen-reader-text">WhatsApp</span>
                             </a>
                         </li>
@@ -99,16 +283,14 @@
 
         <!--Introducción-->
         <section id="intro" class="s-intro">
-
             <div class="s-intro__bg"></div>
 
             <div class="row s-intro__content">
                 <div class="column xl-12">
+                    <div class="s-intro__pretitle hero-intro-pretitle">Bienvenido a</div>
+                    <h1 class="s-intro__title hero-intro-title">La casona</h1>
 
-                    <div class="s-intro__pretitle">Bienvenido a</div>
-                    <h1 class="s-intro__title">La casona</h1>
-
-                    <p class="s-intro__desc lead">
+                    <p class="s-intro__desc lead hero-intro-desc">
                         Permítanos acompañarlo en un recorrido por el mundo de la gastronomía, 
                         donde descubrirá una variedad de sabores y platillos emocionantes. 
                         A lo largo de este viaje culinario, le presentaremos nuevos gustos y 
@@ -117,7 +299,7 @@
                 </div>
             </div>
 
-            <div class="s-intro__scroll-down">
+            <div class="s-intro__scroll-down hero-intro-scroll">
                 <a href="#about" class="smoothscroll">
                     <span class="scroll-text u-screen-reader-text">Deslice hacia abajo</span>
                     <div class="scroll-icon">
@@ -129,40 +311,37 @@
 
         <!--Acerca de-->
         <section id="about" class="s-about">
-
             <div class="row s-about__content">
                 <div class="column xl-12 s-about__content-grid grid-block">
 
                     <div class="s-about__content-header section-header">
-                        <h2 class="text-display-title with-line">Nuestra Historia</h2>
+                        <h2 class="text-display-title with-line animate-fade-in">Nuestra Historia</h2>
                         <div class="s-about__content-header-inner">
-                            <p class="text-desc">
+                            <p class="text-desc animate-fade-in-left">
                                 La Casona nació de la pasión por la gastronomía y el deseo de crear experiencias únicas. Fusionamos sabores, tradición y creatividad para ofrecer cada plato como una aventura.
                             </p>
 
                             <div class="s-about__content-media">
-                                <img class="s-about__media-big" src="../assets/imagenes/INICIO/Inicio-chef.png" alt="">
-                                <img class="s-about__media-small" src="../assets/imagenes/INICIO/Inicio-platillo.jpg" alt="">
+                                <img class="s-about__media-big animate-image" src="assets/imagenes/INICIO/Inicio-chef.png" alt="">
+                                <img class="s-about__media-small animate-image" src="assets/imagenes/INICIO/Inicio-platillo.jpg" alt="">
                             </div>
                         </div>
                     </div>
 
                     <div class="s-about__content-main">
-
-                        <p class="attention-getter">
+                        <p class="attention-getter animate-fade-in-right">
                             Siempre nos esforzamos por brindar un ambiente cálido y un servicio atento, donde cada visita sea una experiencia agradable. Creemos que la buena comida une a las personas y crea momentos especiales.
                         </p>
-                        <p class="attention-getter">
+                        <p class="attention-getter animate-fade-in-right">
                             Cada plato en nuestro menú conserva la esencia de los sabores tradicionales. Usamos ingredientes frescos y de calidad para garantizar el mejor sabor en cada bocado.
                         </p>
-                        <p class="attention-getter">
+                        <p class="attention-getter animate-fade-in-right">
                             Más que un restaurante, La Casona es un espacio para disfrutar y compartir en familia o con amigos. Ya sea una cena especial o un momento de descanso, estamos aquí para hacerlo inolvidable.
                         </p>
 
-                        <div class="s-about__content-btn">
+                        <div class="s-about__content-btn animate-scale-in">
                             <a href="About.html" class="btn btn--stroke btn--medium u-fullwidth">Descubre más</a>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -170,13 +349,11 @@
         
         <!--Carta-->
         <section class="s-menublock">
-
             <div class="fila s-cartabloque_top">
                 <div class="column xl-8 lg-12">
-
                     <div class="s-menublock__content-header section-header">
-                        <h2 class="text-display-title with-line">Nuestros Platos Estrellas</h2>
-                        <p class="attention-getter">
+                        <h2 class="text-display-title with-line animate-fade-in">Nuestros Platos Estrellas</h2>
+                        <p class="attention-getter animate-slide-up">
                             Descubre los sabores más representativos y favoritos de La Casona. Cada uno de nuestros platos estrella ha sido seleccionado por su sabor, presentación y preferencia entre nuestros comensales. Prepárate para deleitarte con opciones irresistibles que hacen de cada visita una experiencia única.
                         </p>
                     </div>
@@ -185,9 +362,9 @@
 
             <div class="row">
                 <div class="column xl-12 menublock__slider-nav">
-                    <a href="Carta.html" class="menu-link">Explorar toda la Carta</a>
+                    <a href="Carta.html" class="menu-link animate-fade-in">Explorar toda la Carta</a>
 
-                    <div class= "menublock-buttons">
+                    <div class="menublock-buttons animate-fade-in">
                         <div class="menublock-btn-prev">
                             <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m9.474 5.209s-4.501 4.505-6.254 6.259c-.147.146-.22.338-.22.53s.073.384.22.53c1.752 1.754 6.252 6.257 6.252 6.257.145.145.336.217.527.217.191-.001.383-.074.53-.221.293-.293.294-.766.004-1.057l-4.976-4.976h14.692c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-14.692l4.978-4.979c.289-.289.287-.761-.006-1.054-.147-.147-.339-.221-.53-.221-.191-.001-.38.071-.525.215z" fill-rule="nonzero"/></svg>
                         </div>
@@ -200,14 +377,13 @@
 
             <div class="row s-menublock__slider-wrap">
                 <div class="column xl-12">
-
                     <div class="swiper-container s-menublock__slider">
                         <div class="swiper-wrapper">
 
-                            <div class="s-menublock__slide swiper-slide">
+                            <div class="s-menublock__slide swiper-slide menu-slide-animate">
                                 <div class="menublock-item">
                                     <div class="menublock-item__thumb">
-                                        <img src="../assets/imagenes/CARTA/Arroz-con-pollo.jpg" alt="">
+                                        <img src="assets/imagenes/CARTA/Arroz-con-pollo.jpg" alt="">
                                     </div>
                                     <div class="menublock-item__text">
                                         <h5>Arroz con Pollo</h5>
@@ -221,10 +397,10 @@
                                 </div>
                             </div>
 
-                            <div class="s-menublock__slide swiper-slide">
+                            <div class="s-menublock__slide swiper-slide menu-slide-animate">
                                 <div class="menublock-item">
                                     <div class="menublock-item__thumb">
-                                        <img src="../assets/imagenes/CARTA/Asado-con-pure.jpg" alt="">
+                                        <img src="assets/imagenes/CARTA/Asado-con-pure.jpg" alt="">
                                     </div>
                                     <div class="menublock-item__text">
                                         <h5>Asado con Puré</h5>
@@ -238,10 +414,10 @@
                                 </div>
                             </div>
 
-                            <div class="s-menublock__slide swiper-slide">
+                            <div class="s-menublock__slide swiper-slide menu-slide-animate">
                                 <div class="menublock-item">
                                     <div class="menublock-item__thumb">
-                                        <img src="../assets/imagenes/CARTA/Lomo-saltado.jpg" alt="">
+                                        <img src="assets/imagenes/CARTA/Lomo-saltado.jpg" alt="">
                                     </div>
                                     <div class="menublock-item__text">
                                         <h5>Lomo Saltado</h5>
@@ -255,10 +431,10 @@
                                 </div>
                             </div>
 
-                            <div class="s-menublock__slide swiper-slide">
+                            <div class="s-menublock__slide swiper-slide menu-slide-animate">
                                 <div class="menublock-item">
                                     <div class="menublock-item__thumb">
-                                        <img src="../assets/imagenes/CARTA/Pollo-al-sillao.jpg" alt="">
+                                        <img src="assets/imagenes/CARTA/Pollo-al-sillao.jpg" alt="">
                                     </div>
                                     <div class="menublock-item__text">
                                         <h5>Pollo al Sillao</h5>
@@ -276,64 +452,61 @@
                     </div>
                 </div>
             </div>
-
         </section>
         
         <!--Galería-->
         <section id="gallery" class="s-gallery">
             <div class="row s-gallery__inner">
                 <div class="column xl-12">
-
                     <div class="gallery-items grid-list-items">
                         <div class="gallery-items__item grid-list-items__item">
-                            <a href="../assets/imagenes/GALERÍA/Grande/Refresco-cebadax2.jpg" class="gallery-items__item-thumb glightbox">
-                                <img src="../assets/imagenes/GALERÍA/Refresco-cebada.jpg" alt="">
+                            <a href="assets/imagenes/GALERÍA/Grande/Refresco-cebadax2.jpg" class="gallery-items__item-thumb glightbox">
+                                <img src="assets/imagenes/GALERÍA/Refresco-cebada.jpg" alt="">
                             </a>
                         </div>
 
                         <div class="gallery-items__item grid-list-items__item">
-                            <a href="../assets/imagenes/GALERÍA/Grande/Pudin-chocolatex2.jpg" class="gallery-items__item-thumb glightbox">
-                                <img src="../assets/imagenes/GALERÍA/Pudin-chocolate.jpg" alt="">
+                            <a href="assets/imagenes/GALERÍA/Grande/Pudin-chocolatex2.jpg" class="gallery-items__item-thumb glightbox">
+                                <img src="assets/imagenes/GALERÍA/Pudin-chocolate.jpg" alt="">
                             </a>
                         </div>
 
                         <div class="gallery-items__item grid-list-items__item">
-                            <a href="../assets/imagenes/GALERÍA/Grande/Quaker-manzanax2.jpg" class="gallery-items__item-thumb glightbox">
-                                <img src="../assets/imagenes/GALERÍA/Quaker-manzana.jpg" alt="">
+                            <a href="assets/imagenes/GALERÍA/Grande/Quaker-manzanax2.jpg" class="gallery-items__item-thumb glightbox">
+                                <img src="assets/imagenes/GALERÍA/Quaker-manzana.jpg" alt="">
                             </a>
                         </div>
 
                         <div class="gallery-items__item grid-list-items__item">
-                            <a href="../assets/imagenes/GALERÍA/Grande/Arroz-con-lechex2.png" class="gallery-items__item-thumb glightbox">
-                                <img src="../assets/imagenes/GALERÍA/Arroz-con-leche.png" alt="">
+                            <a href="assets/imagenes/GALERÍA/Grande/Arroz-con-lechex2.png" class="gallery-items__item-thumb glightbox">
+                                <img src="assets/imagenes/GALERÍA/Arroz-con-leche.png" alt="">
                             </a>
                         </div>
 
                         <div class="gallery-items__item grid-list-items__item">
-                            <a href="../assets/imagenes/GALERÍA/Grande/Refresco-maracuyax2.jpg" class="gallery-items__item-thumb glightbox">
-                                <img src="../assets/imagenes/GALERÍA/Refresco-maracuya.jpg" alt="">
+                            <a href="assets/imagenes/GALERÍA/Grande/Refresco-maracuyax2.jpg" class="gallery-items__item-thumb glightbox">
+                                <img src="assets/imagenes/GALERÍA/Refresco-maracuya.jpg" alt="">
                             </a>
                         </div>
 
                         <div class="gallery-items__item grid-list-items__item">
-                            <a href="../assets/imagenes/GALERÍA/Grande/Pan-pollox2.jpeg" class="gallery-items__item-thumb glightbox">
-                                <img src="../assets/imagenes/GALERÍA/Pan-pollo.jpg" alt="">
+                            <a href="assets/imagenes/GALERÍA/Grande/Pan-pollox2.jpeg" class="gallery-items__item-thumb glightbox">
+                                <img src="assets/imagenes/GALERÍA/Pan-pollo.jpg" alt="">
                             </a>
                         </div>
 
                         <div class="gallery-items__item grid-list-items__item">
-                            <a href="../assets/imagenes/GALERÍA/Grande/Cafe-con-lechex2.jpg" class="gallery-items__item-thumb glightbox">
-                                <img src="../assets/imagenes/GALERÍA/Cafe-con-leche.jpg" alt="">
+                            <a href="assets/imagenes/GALERÍA/Grande/Cafe-con-lechex2.jpg" class="gallery-items__item-thumb glightbox">
+                                <img src="assets/imagenes/GALERÍA/Cafe-con-leche.jpg" alt="">
                             </a>
                         </div>
 
                         <div class="gallery-items__item grid-list-items__item">
-                            <a href="../assets/imagenes/GALERÍA/Grande/Pan-jamonadax2.webp" class="gallery-items__item-thumb glightbox">
-                                <img src="../assets/imagenes/GALERÍA/Pan-jamonada.webp" alt="">
+                            <a href="assets/imagenes/GALERÍA/Grande/Pan-jamonadax2.webp" class="gallery-items__item-thumb glightbox">
+                                <img src="assets/imagenes/GALERÍA/Pan-jamonada.webp" alt="">
                             </a>
                         </div>
                     </div>
-
                 </div>
             </div>
         </section>
@@ -341,48 +514,45 @@
         <!--Footer-->
         <footer id="footer" class="s-footer">
             <div class="row s-footer__main-content">
-
                 <div class="column xl-6 md-12 s-footer__block s-footer__about">
-                    <div class="s-footer__logo">
+                    <div class="s-footer__logo animate-scale-in">
                         <a class="logo" href="Index.html">
-                            <img src="../assets/imagenes/LOGO/LOGO.jpg" alt="Página de inicio">
+                            <img src="assets/imagenes/LOGO/LOGO.jpg" alt="Página de inicio">
                         </a>
                     </div>
 
-                    <p>La Casona es el lugar perfecto para disfrutar de platos deliciosos en un ambiente acogedor. Te esperamos con la mejor atención y sabores únicos.</p>
+                    <p class="animate-fade-in-left">La Casona es el lugar perfecto para disfrutar de platos deliciosos en un ambiente acogedor. Te esperamos con la mejor atención y sabores únicos.</p>
                 </div>
 
                 <div class="column xl-6 md-12 s-footer__block s-footer__info">
                     <div class="row">
                         <div class="column xl-6 lg-12">
-                            <h5>Ubicación</h5>
-                            <p>
+                            <h5 class="animate-fade-in-right">Ubicación</h5>
+                            <p class="animate-fade-in-right">
                             Antigua panamericana, <br>
                             Club Kawai Unión Biblíca del Perú - km 88.8
                             </p>
                         </div>
                         <div class="column xl-6 lg-12">
-                            <h5>Contactos</h5>
-                            <ul class="link-list">
+                            <h5 class="animate-fade-in-right">Contactos</h5>
+                            <ul class="link-list animate-fade-in-right">
                                 <li><a href="casonaKawai@gmail.com">casonaKawai@gmail.com</a></li>
                                 <li><a href="tel:+51980436234">+51 980 436 234</a></li>
                             </ul>
                         </div>
                         <div class="column">
-                            <h5>Horarios de Atención</h5>
-                            <ul class="opening-hours">
+                            <h5 class="animate-fade-in">Horarios de Atención</h5>
+                            <ul class="opening-hours animate-fade-in">
                                 <li><span class="opening-hours__days">De lunes a domingo</span><span class="opening-hours__time"> 7:00am - 12:00am</span></li>
                             </ul>
                         </div>
                     </div>
                 </div>
-
             </div>
 
             <div class="row s-footer__bottom">
-
                 <div class="column xl-6 lg-12">
-                    <ul class="s-footer__social social-list">
+                    <ul class="s-footer__social social-list animate-scale-in">
                         <li>
                             <a href="https://www.facebook.com/unionbiblicadelperu" target="_blank">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:rgba(0, 0, 0, 1);">
@@ -396,7 +566,8 @@
                             <a href="https://wa.me/+51980436234" target="_blank">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M17.472 14.51c-.292-.147-1.728-.853-1.995-.95-.266-.098-.46-.147-.654.147-.196.293-.75.95-.92 1.147-.17.196-.34.22-.632.073-.292-.146-1.233-.455-2.35-1.45-.867-.773-1.45-1.732-1.617-2.024-.17-.293-.017-.45.13-.598.133-.132.292-.34.437-.51.146-.17.196-.293.292-.487.097-.196.05-.366-.024-.51-.073-.146-.654-1.593-.896-2.182-.236-.568-.477-.49-.654-.5h-.555c-.196 0-.51.073-.776.366-.266.293-1.017.996-1.017 2.43s1.042 2.82 1.188 3.013c.147.195 2.04 3.115 4.946 4.243.69.298 1.227.475 1.646.608.692.22 1.323.189 1.82.114.555-.085 1.728-.707 1.97-1.39.243-.683.243-1.268.17-1.39-.073-.121-.266-.194-.555-.34z"/>
-                                    <path d="M12 2C6.485 2 2 6.485 2 12c0 1.85.503 3.68 1.457 5.265L2 22l4.956-1.243A9.947 9.947 0 0012 22c5.515 0 10-4.485 10-10S17.515 2 12 2zm0 18c-1.63 0-3.228-.433-4.606-1.252l-.331-.195-2.945.736.79-2.798-.212-.336A7.925 7.925 0 014 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"/></svg>
+                                    <path d="M12 2C6.485 2 2 6.485 2 12c0 1.85.503 3.68 1.457 5.265L2 22l4.956-1.243A9.947 9.947 0 0012 22c5.515 0 10-4.485 10-10S17.515 2 12 2zm0 18c-1.63 0-3.228-.433-4.606-1.252l-.331-.195-2.945.736.79-2.798-.212-.336A7.925 7.925 0 014 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"/>
+                                </svg>
                                 <span class="u-screen-reader-text">WhatsApp</span>
                             </a>
                         </li>
@@ -404,44 +575,79 @@
                 </div>
 
                 <div class="column xl-6 lg-12">
-                    <p class="ss-copyright">
+                    <p class="ss-copyright animate-fade-in">
                         <span>© Copyright Kawaii 2025</span>
                     </p>
                 </div>
                 <div class="column xl-6 lg-12">
-                    <p class="ss-copyright">
+                    <p class="ss-copyright animate-fade-in">
                         <span>© Copyright Kawaii 2025</span>
                         <a href="#" onclick="abrirLogin()" style="margin-left: 15px; color: #ff9800; text-decoration: underline;">
-    Acceso Administrativo
-</a>
-
-
+                            Acceso Administrativo
+                        </a>
                     </p>
                 </div>
             </div>
 
-            <div class="ss-go-top">
+            <div class="ss-go-top animate-scale-in">
                 <a class="smoothscroll" title="Volver arriba" href="#top">
                     <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.523 18.787s4.501-4.505 6.255-6.26c.146-.146.219-.338.219-.53s-.073-.383-.219-.53c-1.753-1.754-6.255-6.258-6.255-6.258-.144-.145-.334-.217-.524-.217-.193 0-.385.074-.532.221-.293.292-.295.766-.004 1.056l4.978 4.978h-14.692c-.414 0-.75.336-.75.75s.336.75.75.75h14.692l-4.979 4.979c-.289.289-.286.762.006 1.054.148.148.341.222.533.222.19 0 .378-.072.522-.215z" fill-rule="nonzero"/></svg>
                 </a>
                 <span>Volver arriba</span>
             </div>
-
         </footer>
 
     </div>
 
     <!--Java Script-->
-    <script src="../assets/js/Complementos.js"></script>
-    <script src="../assets/js/Main.js"></script>
+    <script src="assets/js/Complementos.js"></script>
+    <script src="assets/js/Main.js"></script>
     <script>
         function abrirLogin() {
             window.open(
-                '../admin/login.php',
+                'admin/IndexAdmin.php',
                 'LoginAdmin',
                 'width=500,height=600,top=100,left=100,toolbar=no,location=no,directories=no,status=no,menubar=no'
             );
         }
+
+        // Animaciones al hacer scroll
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.animate-fade-in, .animate-fade-in-left, .animate-fade-in-right, .animate-scale-in, .animate-slide-up, .animate-image, .gallery-items__item, .menu-slide-animate');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            elements.forEach(element => {
+                observer.observe(element);
+            });
+        }
+
+        // Inicializar animaciones cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            animateOnScroll();
+        });
+
+        // Trigger inicial para elementos visibles al cargar
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const visibleElements = document.querySelectorAll('.animate-fade-in, .animate-fade-in-left, .animate-fade-in-right, .animate-scale-in, .animate-slide-up, .animate-image');
+                visibleElements.forEach(element => {
+                    const rect = element.getBoundingClientRect();
+                    if (rect.top < window.innerHeight && rect.bottom > 0) {
+                        element.classList.add('animate');
+                    }
+                });
+            }, 200);
+        });
     </script>
 </body>
 </html>

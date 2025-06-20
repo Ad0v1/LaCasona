@@ -1,687 +1,685 @@
-// Funciones generales
-document.documentElement.classList.remove("no-js")
-document.documentElement.classList.add("js")
-let currentStep = 1
+document.addEventListener("DOMContentLoaded", () => {
+  // LIMPIAR localStorage al cargar la página para evitar campos completados
+  const persistentFields = [
+    "menu_type",
+    "fecha_reserva",
+    "hora_reserva",
+    "cantidad_personas",
+    "nombre",
+    "apellidos",
+    "telefono",
+    "email",
+    "codigo_reserva",
+    "metodo_pago",
+    "nombre_titular",
+    "numero_operacion",
+  ]
 
-// Función para mostrar modal con animación
-function showModal(message) {
-  const modal = document.getElementById("notificationModal")
-  const messageElement = document.getElementById("modal-message")
-  if (modal && messageElement) {
-    messageElement.textContent = message
-    modal.style.display = "flex"
-    // Añadir clase para la animación
+  // Limpiar localStorage al cargar la página
+  persistentFields.forEach((fieldName) => {
+    localStorage.removeItem(`reserva_${fieldName}`)
+  })
+
+  // Elementos del DOM
+  const menuTypeRadios = document.querySelectorAll('input[name="menu_type"]')
+  const menuOptionsGroups = {
+    desayuno: document.getElementById("desayuno_options"),
+    almuerzo: document.getElementById("almuerzo_options"),
+    cena: document.getElementById("cena_options"),
+  }
+
+  const fechaReservaInput = document.getElementById("fecha_reserva")
+  const horaReservaSelect = document.getElementById("hora_reserva")
+  const telefonoInput = document.getElementById("telefono")
+  const emailInput = document.getElementById("email")
+  const cantidadPersonasInput = document.getElementById("cantidad_personas")
+
+  // Elementos de pago
+  const metodoPagoRadios = document.querySelectorAll('input[name="metodo_pago"]')
+  const codigoSeguridadGroup = document.getElementById("codigo_seguridad_group")
+  const bancoGroup = document.getElementById("banco_group")
+  const tipoComprobanteRadios = document.querySelectorAll('input[name="tipo_comprobante"]')
+  const rucFacturaGroup = document.getElementById("ruc_factura_group")
+
+  // Configurar fecha mínima (2 días después de hoy)
+  if (fechaReservaInput) {
+    const today = new Date()
+    const minDate = new Date(today)
+    minDate.setDate(today.getDate() + 2)
+
+    const yyyy = minDate.getFullYear()
+    const mm = String(minDate.getMonth() + 1).padStart(2, "0")
+    const dd = String(minDate.getDate()).padStart(2, "0")
+
+    fechaReservaInput.min = `${yyyy}-${mm}-${dd}`
+  }
+
+  // Función para mostrar notificación toast
+  function showNotification(message, type = "success", duration = 5000) {
+    const toast = document.createElement("div")
+    toast.className = `notification-toast ${type}`
+
+    const icon = type === "success" ? "✓" : type === "error" ? "⚠" : "ℹ"
+
+    toast.innerHTML = `
+      <div class="toast-icon">${icon}</div>
+      <div class="toast-content">
+        <p>${message}</p>
+      </div>
+      <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+    `
+
+    // Estilos para la notificación
+    toast.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: ${
+        type === "success"
+          ? "linear-gradient(135deg, #d4edda 0%, #a8e6cf 100%)"
+          : type === "error"
+            ? "linear-gradient(135deg, #fde8e8 0%, #ffcccb 100%)"
+            : "linear-gradient(135deg, #d1ecf1 0%, #a8e6cf 100%)"
+      };
+      color: ${type === "success" ? "#155724" : type === "error" ? "#721c24" : "#0c5460"};
+      padding: 20px 25px;
+      border-radius: 16px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      border: 3px solid ${type === "success" ? "#27ae60" : type === "error" ? "#e74c3c" : "#3498db"};
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      z-index: 10000;
+      transform: translateX(400px);
+      opacity: 0;
+      transition: all 0.3s ease-out;
+      max-width: 400px;
+      font-family: 'EB Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+    `
+
+    document.body.appendChild(toast)
+
+    // Mostrar toast con animación
     setTimeout(() => {
-      modal.classList.add("show")
-    }, 10)
-  }
-}
+      toast.style.transform = "translateX(0)"
+      toast.style.opacity = "1"
+    }, 100)
 
-// Función para cerrar modal con animación
-function closeModal() {
-  const modal = document.getElementById("notificationModal")
-  if (modal) {
-    modal.classList.remove("show")
-    // Esperar a que termine la animación antes de ocultar
+    // Ocultar toast después del tiempo especificado
     setTimeout(() => {
-      modal.style.display = "none"
-    }, 300)
-  }
-}
-
-// Función para calcular y actualizar el total en tiempo real
-function calcularTotal() {
-  let total = 0
-  const personas = Number.parseInt(document.getElementById("rparty-size").value) || 0
-
-  // Verificar desayuno completo
-  if (document.getElementById("desayuno").value && document.getElementById("pan_desayuno").value) {
-    total += 9.0 * personas
+      toast.style.transform = "translateX(400px)"
+      toast.style.opacity = "0"
+      setTimeout(() => toast.remove(), 300)
+    }, duration)
   }
 
-  // Verificar almuerzo completo (entrada y plato de fondo son obligatorios)
-  if (document.getElementById("almuerzo_entrada").value && document.getElementById("almuerzo_fondo").value) {
-    total += 14.5 * personas
-  }
+  // Función para filtrar horarios según tipo de menú - MEJORADA
+  function filterHorariosByMenuType() {
+    const selectedMenuType = document.querySelector('input[name="menu_type"]:checked')
+    const horaReservaSelect = document.getElementById("hora_reserva")
 
-  // Verificar cena (plato principal es obligatorio)
-  if (document.getElementById("cena").value) {
-    total += 16.5 * personas
-  }
+    if (!horaReservaSelect || !selectedMenuType) return
 
-  return total.toFixed(2)
-}
-
-// Función para validar el paso actual
-function validateStep(step) {
-  if (step === 1) {
-    // Verificar que al menos un menú esté seleccionado completamente
-    const desayunoCompleto = document.getElementById("desayuno").value && document.getElementById("pan_desayuno").value
-    const almuerzoCompleto =
-      document.getElementById("almuerzo_entrada").value && document.getElementById("almuerzo_fondo").value
-    const cenaCompleta = document.getElementById("cena").value
-
-    if (!desayunoCompleto && !almuerzoCompleto && !cenaCompleta) {
-      showModal("Debes seleccionar al menos un menú completo para continuar.")
-      return false
+    // Guardar todas las opciones originales si no están guardadas
+    if (!horaReservaSelect.dataset.originalOptions) {
+      horaReservaSelect.dataset.originalOptions = horaReservaSelect.innerHTML
     }
 
-    // Validar que si se selecciona parte del desayuno, se complete
-    if (
-      (document.getElementById("desayuno").value && !document.getElementById("pan_desayuno").value) ||
-      (!document.getElementById("desayuno").value && document.getElementById("pan_desayuno").value)
-    ) {
-      showModal("Debes completar todos los campos del Desayuno.")
-      return false
-    }
+    // Restaurar todas las opciones
+    horaReservaSelect.innerHTML = horaReservaSelect.dataset.originalOptions
 
-    // Validar que si se selecciona parte del almuerzo, se completen los campos obligatorios
-    if (
-      (document.getElementById("almuerzo_entrada").value && !document.getElementById("almuerzo_fondo").value) ||
-      (!document.getElementById("almuerzo_entrada").value && document.getElementById("almuerzo_fondo").value)
-    ) {
-      showModal("Debes seleccionar tanto la entrada como el plato de fondo para el Almuerzo.")
-      return false
-    }
-  }
+    const menuType = selectedMenuType.value
+    const allOptions = horaReservaSelect.querySelectorAll("option")
 
-  if (step === 2) {
-    // Validar campos requeridos
-    const requiredFields = [
-      { id: "rname", label: "Nombre" },
-      { id: "rphone", label: "Número de contacto" },
-      { id: "rdate", label: "Fecha" },
-      { id: "rtime", label: "Hora" },
-      { id: "rparty-size", label: "Tamaño del grupo" },
-    ]
+    // Filtrar opciones según el tipo de menú
+    allOptions.forEach((option) => {
+      if (option.value === "") return // Mantener opción vacía
 
-    for (const field of requiredFields) {
-      const element = document.getElementById(field.id)
-      if (!element || !element.value.trim()) {
-        showModal(`El campo ${field.label} es obligatorio.`)
-        if (element) {
-          element.classList.add("error-field")
-          element.focus()
-        }
-        return false
+      const optionText = option.textContent.toLowerCase()
+      let shouldShow = false
+
+      switch (menuType) {
+        case "desayuno":
+          // Mostrar solo horarios de 7:00 AM a 12:00 PM
+          shouldShow =
+            optionText.includes("desayuno") ||
+            (optionText.includes("am") && !optionText.includes("12:")) ||
+            (optionText.includes("pm") && (optionText.includes("12:00") || optionText.includes("12:30")))
+          break
+        case "almuerzo":
+          // Mostrar solo horarios de 12:00 PM a 6:00 PM
+          shouldShow =
+            optionText.includes("almuerzo") ||
+            (optionText.includes("pm") &&
+              (optionText.includes("12:") ||
+                optionText.includes("1:") ||
+                optionText.includes("2:") ||
+                optionText.includes("3:") ||
+                optionText.includes("4:") ||
+                optionText.includes("5:") ||
+                optionText.includes("6:00") ||
+                optionText.includes("6:30")))
+          break
+        case "cena":
+          // Mostrar solo horarios de 6:00 PM a 12:00 AM
+          shouldShow =
+            optionText.includes("cena") ||
+            (optionText.includes("pm") &&
+              (optionText.includes("6:") ||
+                optionText.includes("7:") ||
+                optionText.includes("8:") ||
+                optionText.includes("9:") ||
+                optionText.includes("10:") ||
+                optionText.includes("11:"))) ||
+            (optionText.includes("am") && (optionText.includes("12:00") || optionText.includes("12:30")))
+          break
+      }
+
+      if (!shouldShow) {
+        option.style.display = "none"
+        option.disabled = true
       } else {
-        element.classList.remove("error-field")
+        option.style.display = "block"
+        option.disabled = false
       }
-    }
-
-    // Validar formato de teléfono (9 dígitos comenzando con 9)
-    const phone = document.getElementById("rphone").value
-    if (!/^9\d{8}$/.test(phone)) {
-      showModal("El teléfono debe tener 9 dígitos y empezar con 9.")
-      document.getElementById("rphone").classList.add("error-field")
-      document.getElementById("rphone").focus()
-      return false
-    } else {
-      document.getElementById("rphone").classList.remove("error-field")
-    }
-
-    // Validar que la fecha no sea pasada
-    const selectedDate = new Date(document.getElementById("rdate").value + "T" + document.getElementById("rtime").value)
-    const now = new Date()
-
-    if (selectedDate < now) {
-      showModal("No puedes reservar en fechas u horas pasadas.")
-      document.getElementById("rdate").classList.add("error-field")
-      document.getElementById("rtime").classList.add("error-field")
-      return false
-    } else {
-      document.getElementById("rdate").classList.remove("error-field")
-      document.getElementById("rtime").classList.remove("error-field")
-    }
-
-    // Validar número de personas
-    const personas = Number.parseInt(document.getElementById("rparty-size").value)
-    if (isNaN(personas) || personas <= 0 || personas > 250) {
-      showModal("El número de personas debe ser entre 1 y 250.")
-      document.getElementById("rparty-size").classList.add("error-field")
-      document.getElementById("rparty-size").focus()
-      return false
-    } else {
-      document.getElementById("rparty-size").classList.remove("error-field")
-    }
-  }
-
-  return true
-}
-
-// Función para actualizar resumen con animaciones
-function updateResumen() {
-  const resumenDiv = document.getElementById("resumenContenido")
-  if (!resumenDiv) return
-
-  // Obtener datos personales
-  const nombre = document.getElementById("rname").value
-  const telefono = document.getElementById("rphone").value
-  const email = document.getElementById("email").value || "No especificado"
-  const fecha = document.getElementById("rdate").value
-  const hora = document.getElementById("rtime").value
-  const personas = document.getElementById("rparty-size").value
-  const info = document.getElementById("radd-info").value || "Ninguna"
-
-  // Calcular el total
-  const total = calcularTotal()
-
-  // Construir HTML para el resumen
-  let html = `
-        <div class="resumen-seccion">
-            <h3>Datos Personales</h3>
-            <p><strong>Nombre:</strong> ${nombre}</p>
-            <p><strong>Teléfono:</strong> ${telefono}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Fecha:</strong> ${fecha}</p>
-            <p><strong>Hora:</strong> ${hora}</p>
-            <p><strong>Personas:</strong> ${personas}</p>
-            <p><strong>Información Adicional:</strong> ${info}</p>
-        </div>
-        
-        <div class="resumen-seccion">
-            <h3>Menú Seleccionado</h3>
-    `
-
-  // Verificar desayuno
-  if (document.getElementById("desayuno").value && document.getElementById("pan_desayuno").value) {
-    const bebida = document.getElementById("desayuno")
-    const pan = document.getElementById("pan_desayuno")
-
-    html += `
-            <div class="menu-item">
-                <h4>Desayuno - S/. 9.00 por persona</h4>
-                <ul>
-                    <li>Bebida: ${bebida.options[bebida.selectedIndex].text}</li>
-                    <li>Pan: ${pan.options[pan.selectedIndex].text}</li>
-                </ul>
-            </div>
-        `
-  }
-
-  // Verificar almuerzo
-  if (document.getElementById("almuerzo_entrada").value && document.getElementById("almuerzo_fondo").value) {
-    const entrada = document.getElementById("almuerzo_entrada")
-    const fondo = document.getElementById("almuerzo_fondo")
-    const postre = document.getElementById("almuerzo_postre")
-    const bebida = document.getElementById("almuerzo_bebida")
-
-    html += `
-            <div class="menu-item">
-                <h4>Almuerzo - S/. 14.50 por persona</h4>
-                <ul>
-                    <li>Entrada: ${entrada.options[entrada.selectedIndex].text}</li>
-                    <li>Plato de fondo: ${fondo.options[fondo.selectedIndex].text}</li>
-        `
-
-    if (postre.value) {
-      html += `<li>Postre: ${postre.options[postre.selectedIndex].text}</li>`
-    }
-
-    if (bebida.value) {
-      html += `<li>Bebida: ${bebida.options[bebida.selectedIndex].text}</li>`
-    }
-
-    html += `
-                </ul>
-            </div>
-        `
-  }
-
-  // Verificar cena
-  if (document.getElementById("cena").value) {
-    const plato = document.getElementById("cena")
-    const postre = document.getElementById("cena_postre")
-    const bebida = document.getElementById("cena_bebida")
-
-    html += `
-            <div class="menu-item">
-                <h4>Cena - S/. 16.50 por persona</h4>
-                <ul>
-                    <li>Plato principal: ${plato.options[plato.selectedIndex].text}</li>
-        `
-
-    if (postre.value) {
-      html += `<li>Postre: ${postre.options[postre.selectedIndex].text}</li>`
-    }
-
-    if (bebida.value) {
-      html += `<li>Bebida: ${bebida.options[bebida.selectedIndex].text}</li>`
-    }
-
-    html += `
-                </ul>
-            </div>
-        `
-  }
-
-  // Si no hay menús seleccionados
-  if (
-    !document.getElementById("desayuno").value &&
-    !document.getElementById("almuerzo_entrada").value &&
-    !document.getElementById("cena").value
-  ) {
-    html += "<p>No se ha seleccionado ningún menú.</p>"
-  }
-
-  // Agregar total
-  html += `
-        </div>
-        
-        <div class="resumen-seccion total">
-            <h3>Total a Pagar</h3>
-            <p class="precio-total">S/. ${total}</p>
-            <p class="detalle-total">Para ${personas} persona${personas > 1 ? "s" : ""}</p>
-        </div>
-    `
-
-  resumenDiv.innerHTML = html
-}
-
-// Función para formatear el número de tarjeta mientras se escribe
-function formatearNumeroTarjeta() {
-  const input = document.getElementById("numero-tarjeta")
-  if (!input) return
-
-  let value = input.value.replace(/\D/g, "")
-
-  // Limitar a 16 dígitos
-  if (value.length > 16) {
-    value = value.slice(0, 16)
-  }
-
-  // Formatear con espacios cada 4 dígitos
-  const formattedValue = value.replace(/(\d{4})(?=\d)/g, "$1 ")
-  input.value = formattedValue
-
-  // Eliminar la clase de error si el campo tiene 16 dígitos
-  if (value.length === 16) {
-    input.classList.remove("error-field")
-  } else {
-    input.classList.add("error-field")
-  }
-}
-
-// Función para formatear la fecha de expiración mientras se escribe
-function formatearFechaExpiracion() {
-  const input = document.getElementById("fecha-expiracion")
-  if (!input) return
-
-  let value = input.value.replace(/\D/g, "")
-
-  // Limitar a 4 dígitos
-  if (value.length > 4) {
-    value = value.slice(0, 4)
-  }
-
-  // Formatear como MM/AA
-  if (value.length > 2) {
-    value = value.slice(0, 2) + "/" + value.slice(2)
-  }
-
-  input.value = value
-}
-
-// Función para cambiar al siguiente paso con animación
-function nextStep(next) {
-  if (validateStep(currentStep)) {
-    // Ocultar paso actual con animación
-    const currentStepElement = document.getElementById(`step${currentStep}`)
-    currentStepElement.classList.remove("active")
-
-    // Actualizar el paso actual
-    currentStep = next
-
-    // Mostrar nuevo paso con animación
-    const nextStepElement = document.getElementById(`step${currentStep}`)
-    setTimeout(() => {
-      nextStepElement.classList.add("active")
-    }, 300)
-
-    // Actualizar progreso
-    updateProgressSteps()
-
-    // Scroll al inicio del formulario
-    window.scrollTo({
-      top: document.querySelector(".progress-steps").offsetTop - 50,
-      behavior: "smooth",
     })
 
-    if (currentStep === 3) updateResumen()
+    // Limpiar selección si la opción actual no es válida para el nuevo tipo
+    const currentValue = horaReservaSelect.value
+    if (currentValue) {
+      const currentOption = horaReservaSelect.querySelector(`option[value="${currentValue}"]`)
+      if (currentOption && currentOption.style.display === "none") {
+        horaReservaSelect.value = ""
+      }
+    }
   }
-}
 
-// Función para volver al paso anterior con animación
-function prevStep(prev) {
-  // Ocultar paso actual con animación
-  const currentStepElement = document.getElementById(`step${currentStep}`)
-  currentStepElement.classList.remove("active")
+  // Función para mostrar/ocultar opciones de menú
+  function showMenuOptions() {
+    // Ocultar todas las opciones
+    Object.values(menuOptionsGroups).forEach((group) => {
+      if (group) group.classList.remove("active")
+    })
 
-  // Actualizar el paso actual
-  currentStep = prev
+    // Mostrar la opción seleccionada
+    const selectedMenuType = document.querySelector('input[name="menu_type"]:checked')
+    if (selectedMenuType && menuOptionsGroups[selectedMenuType.value]) {
+      menuOptionsGroups[selectedMenuType.value].classList.add("active")
+    }
 
-  // Mostrar nuevo paso con animación
-  const prevStepElement = document.getElementById(`step${currentStep}`)
-  setTimeout(() => {
-    prevStepElement.classList.add("active")
-  }, 300)
+    // Filtrar horarios según el tipo de menú seleccionado
+    filterHorariosByMenuType()
+  }
 
-  // Actualizar progreso
-  updateProgressSteps()
+  // Función para manejar métodos de pago
+  function togglePaymentFields() {
+    const selectedMethod = document.querySelector('input[name="metodo_pago"]:checked')
 
-  // Scroll al inicio del formulario
-  window.scrollTo({
-    top: document.querySelector(".progress-steps").offsetTop - 50,
-    behavior: "smooth",
+    if (codigoSeguridadGroup && bancoGroup) {
+      // Ocultar ambos grupos inicialmente
+      codigoSeguridadGroup.style.display = "none"
+      codigoSeguridadGroup.classList.remove("show")
+      bancoGroup.style.display = "none"
+      bancoGroup.classList.remove("show")
+
+      if (selectedMethod) {
+        if (selectedMethod.value === "yape") {
+          setTimeout(() => {
+            codigoSeguridadGroup.style.display = "block"
+            codigoSeguridadGroup.classList.add("show")
+          }, 100)
+        } else if (selectedMethod.value === "transferencia") {
+          setTimeout(() => {
+            bancoGroup.style.display = "block"
+            bancoGroup.classList.add("show")
+          }, 100)
+        }
+      }
+    }
+  }
+
+  // Función para manejar tipo de comprobante
+  function toggleRucField() {
+    const selectedComprobante = document.querySelector('input[name="tipo_comprobante"]:checked')
+    if (rucFacturaGroup) {
+      if (selectedComprobante && selectedComprobante.value === "factura") {
+        setTimeout(() => {
+          rucFacturaGroup.style.display = "block"
+          rucFacturaGroup.classList.add("show")
+          const rucInput = rucFacturaGroup.querySelector("input")
+          if (rucInput) rucInput.setAttribute("required", "required")
+        }, 100)
+      } else {
+        rucFacturaGroup.style.display = "none"
+        rucFacturaGroup.classList.remove("show")
+        const rucInput = rucFacturaGroup.querySelector("input")
+        if (rucInput) {
+          rucInput.value = ""
+          rucInput.removeAttribute("required")
+        }
+      }
+    }
+  }
+
+  // Event listeners
+  menuTypeRadios.forEach((radio) => {
+    radio.addEventListener("change", showMenuOptions)
   })
-}
 
-// Función para actualizar el indicador de progreso
-function updateProgressSteps() {
-  const progressSteps = document.querySelector(".progress-steps")
-  if (progressSteps) {
-    progressSteps.setAttribute("data-step", currentStep)
+  metodoPagoRadios.forEach((radio) => {
+    radio.addEventListener("change", togglePaymentFields)
+  })
 
-    // Actualizar clases de los pasos
-    document.querySelectorAll(".progress-steps .step").forEach((step) => {
-      const stepNumber = Number.parseInt(step.dataset.step)
-      step.classList.remove("active", "completed")
+  tipoComprobanteRadios.forEach((radio) => {
+    radio.addEventListener("change", toggleRucField)
+  })
 
-      if (stepNumber === currentStep) {
-        step.classList.add("active")
-      } else if (stepNumber < currentStep) {
-        step.classList.add("completed")
+  // Función para mostrar errores individuales por campo
+  function showFieldError(field, message) {
+    // Remover mensaje de error previo
+    const existingError = field.parentElement.querySelector(".field-error-message")
+    if (existingError) {
+      existingError.remove()
+    }
+
+    // Agregar clase de error al campo
+    field.classList.add("field-error")
+
+    // Crear mensaje de error
+    const errorDiv = document.createElement("div")
+    errorDiv.className = "field-error-message"
+    errorDiv.textContent = message
+
+    // Insertar después del campo
+    field.parentElement.appendChild(errorDiv)
+
+    // Remover el error después de 5 segundos
+    setTimeout(() => {
+      if (errorDiv && errorDiv.parentElement) {
+        errorDiv.remove()
+      }
+      field.classList.remove("field-error")
+    }, 5000)
+  }
+
+  // Función para limpiar errores de un campo
+  function clearFieldError(field) {
+    field.classList.remove("field-error")
+    const existingError = field.parentElement.querySelector(".field-error-message")
+    if (existingError) {
+      existingError.remove()
+    }
+  }
+
+  // VALIDACIONES MEJORADAS EN TIEMPO REAL
+  if (telefonoInput) {
+    telefonoInput.addEventListener("input", function () {
+      const phonePattern = /^9\d{8}$/
+      if (this.value && !phonePattern.test(this.value)) {
+        this.setCustomValidity("Debe empezar con 9 y tener exactamente 9 dígitos.")
+        showFieldError(this, "Debe empezar con 9 y tener exactamente 9 dígitos.")
+      } else {
+        this.setCustomValidity("")
+        clearFieldError(this)
       }
     })
   }
-}
 
-// Función para validar datos de pago
-function validarPago() {
-  // Limpiar errores previos
-  limpiarErrores()
-
-  // Obtener valores de los campos
-  const nombreTitular = document.getElementById("nombre-titular").value.trim()
-  const numeroTarjeta = document.getElementById("numero-tarjeta").value.trim().replace(/\s/g, "")
-  const fechaExpiracion = document.getElementById("fecha-expiracion").value.trim()
-  const cvc = document.getElementById("cvc").value.trim()
-
-  // Validar que los campos no estén vacíos
-  if (!nombreTitular || !numeroTarjeta || !fechaExpiracion || !cvc) {
-    showModal("Por favor, complete todos los campos de pago.")
-
-    if (!nombreTitular) document.getElementById("nombre-titular").classList.add("error-field")
-    if (!numeroTarjeta) document.getElementById("numero-tarjeta").classList.add("error-field")
-    if (!fechaExpiracion) document.getElementById("fecha-expiracion").classList.add("error-field")
-    if (!cvc) document.getElementById("cvc").classList.add("error-field")
-
-    return false
+  if (emailInput) {
+    emailInput.addEventListener("input", function () {
+      const emailPattern = /^[^\s@]+@gmail\.com$/
+      if (this.value && !emailPattern.test(this.value)) {
+        this.setCustomValidity("El correo debe terminar en @gmail.com")
+        showFieldError(this, "El correo debe terminar en @gmail.com")
+      } else {
+        this.setCustomValidity("")
+        clearFieldError(this)
+      }
+    })
   }
 
-  // Validar formato de número de tarjeta (16 dígitos)
-  if (!/^\d{16}$/.test(numeroTarjeta)) {
-    showModal("El número de tarjeta debe tener 16 dígitos.")
-    document.getElementById("numero-tarjeta").classList.add("error-field")
-    document.getElementById("numero-tarjeta").focus()
-    return false
+  if (fechaReservaInput) {
+    fechaReservaInput.addEventListener("change", function () {
+      const selectedDate = new Date(this.value)
+      const minDate = new Date()
+      minDate.setDate(minDate.getDate() + 2)
+      minDate.setHours(0, 0, 0, 0)
+
+      if (selectedDate < minDate) {
+        this.setCustomValidity("La fecha debe ser mínimo 2 días después de hoy.")
+        showFieldError(this, "La fecha debe ser mínimo 2 días después de hoy.")
+      } else {
+        this.setCustomValidity("")
+        clearFieldError(this)
+      }
+    })
   }
 
-  // Validar formato de fecha de expiración (MM/AA)
-  if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(fechaExpiracion)) {
-    showModal("La fecha de expiración debe tener el formato MM/AA.")
-    document.getElementById("fecha-expiracion").classList.add("error-field")
-    document.getElementById("fecha-expiracion").focus()
-    return false
+  // Validación mejorada de números de operación
+  const numeroOperacionInput = document.getElementById("numero_operacion")
+  if (numeroOperacionInput) {
+    numeroOperacionInput.addEventListener("input", function () {
+      const selectedMethod = document.querySelector('input[name="metodo_pago"]:checked')
+      if (selectedMethod) {
+        let isValid = false
+        let errorMessage = ""
+
+        if (selectedMethod.value === "yape") {
+          isValid = /^\d{8}$/.test(this.value)
+          errorMessage = "El número de operación de Yape debe tener exactamente 8 dígitos."
+        } else if (selectedMethod.value === "transferencia") {
+          isValid = /^\d{8,11}$/.test(this.value)
+          errorMessage = "El número de operación de transferencia debe tener entre 8 y 11 dígitos."
+        }
+
+        if (this.value && !isValid) {
+          this.setCustomValidity(errorMessage)
+          showFieldError(this, errorMessage)
+        } else {
+          this.setCustomValidity("")
+          clearFieldError(this)
+        }
+      }
+    })
   }
 
-  // Validar CVC (3-4 dígitos)
-  if (!/^\d{3,4}$/.test(cvc)) {
-    showModal("El CVC debe tener 3 o 4 dígitos.")
-    document.getElementById("cvc").classList.add("error-field")
-    document.getElementById("cvc").focus()
-    return false
+  // Validación mejorada de RUC
+  const rucInput = document.getElementById("ruc_factura")
+  if (rucInput) {
+    rucInput.addEventListener("input", function () {
+      const rucPattern = /^\d{11}$/
+      if (this.value && !rucPattern.test(this.value)) {
+        this.setCustomValidity("El RUC debe tener exactamente 11 dígitos.")
+        showFieldError(this, "El RUC debe tener exactamente 11 dígitos.")
+      } else {
+        this.setCustomValidity("")
+        clearFieldError(this)
+      }
+    })
   }
 
-  // Validar que se haya seleccionado al menos un menú
-  const desayunoSeleccionado =
-    document.getElementById("desayuno").value && document.getElementById("pan_desayuno").value
-  const almuerzoSeleccionado =
-    document.getElementById("almuerzo_entrada").value && document.getElementById("almuerzo_fondo").value
-  const cenaSeleccionada = document.getElementById("cena").value
-
-  if (!desayunoSeleccionado && !almuerzoSeleccionado && !cenaSeleccionada) {
-    showModal("Debe seleccionar al menos un menú para realizar la reserva.")
-    return false
+  // Formatear código de reserva en mayúsculas
+  const codigoReservaInput = document.getElementById("codigo_reserva")
+  if (codigoReservaInput) {
+    codigoReservaInput.addEventListener("input", function () {
+      this.value = this.value.toUpperCase()
+    })
   }
 
-  return true
-}
+  // ===== VALIDACIÓN COMPLETAMENTE CORREGIDA =====
+  // SOLO validar en acciones de AVANCE, NUNCA en navegación/cambio/plegado
+  const forms = document.querySelectorAll("form")
+  forms.forEach((form) => {
+    form.addEventListener("submit", (e) => {
+      // Obtener el botón que se presionó
+      const submitButton = e.submitter || form.querySelector('button[type="submit"]')
+      const currentAction = submitButton ? submitButton.value : null
 
-// Controlador de método de pago
-document.addEventListener("change", (e) => {
-  if (e.target.name === "metodo_pago") {
-    document.getElementById("datosTarjeta").style.display = e.target.value === "tarjeta" ? "block" : "none"
-  }
-})
+      console.log("Acción detectada:", currentAction)
 
-// Funciones de menú con animación
-function mostrarSeccion(tipo) {
-  // Ocultar todas las secciones primero
-  document.querySelectorAll(".seccion-menu").forEach((seccion) => {
-    seccion.classList.remove("active")
+      // ===== ACCIONES QUE NUNCA DEBEN VALIDAR =====
+      const NO_VALIDATION_ACTIONS = [
+        // Cambio de actividad / Plegado
+        "show_solicitud",
+        "show_pago",
+
+        // Navegación hacia atrás
+        "solicitud_back",
+        "pago_back",
+
+        // Reinicio
+        "reset",
+
+        // Cualquier acción que no sea avance
+        null,
+        undefined,
+      ]
+
+      // Si es una acción sin validación, permitir INMEDIATAMENTE
+      if (NO_VALIDATION_ACTIONS.includes(currentAction)) {
+        console.log("Acción sin validación - Permitiendo inmediatamente")
+        return // NO HACER NADA - Dejar que el formulario se envíe
+      }
+
+      // ===== SOLO VALIDAR ACCIONES DE AVANCE =====
+      const ADVANCE_ACTIONS = [
+        "solicitud_next_step1",
+        "solicitud_next_step2",
+        "solicitud_confirm",
+        "pago_next_step1",
+        "pago_next_step2",
+        "pago_confirm",
+      ]
+
+      // Solo validar si es una acción de avance
+      if (!ADVANCE_ACTIONS.includes(currentAction)) {
+        console.log("No es acción de avance - Permitiendo")
+        return // Permitir cualquier otra acción
+      }
+
+      console.log("Validando acción de avance:", currentAction)
+
+      // Encontrar el paso activo
+      const activeStep = document.querySelector(".form-step.active")
+      if (!activeStep) {
+        console.log("No se encontró paso activo")
+        return
+      }
+
+      // Validar campos requeridos del paso activo
+      const requiredFields = activeStep.querySelectorAll("input[required], select[required]")
+      let isValid = true
+      let firstErrorField = null
+
+      requiredFields.forEach((field) => {
+        // Verificar si el campo está visible (no está en un grupo oculto)
+        const isVisible = field.offsetParent !== null
+
+        if (isVisible) {
+          if (field.type === "radio") {
+            // Para radio buttons, verificar si al menos uno del grupo está seleccionado
+            const radioGroup = document.querySelectorAll(`input[name="${field.name}"]`)
+            const isChecked = Array.from(radioGroup).some((radio) => radio.checked)
+            if (!isChecked) {
+              field.classList.add("field-error")
+              if (!firstErrorField) firstErrorField = field
+              isValid = false
+            } else {
+              radioGroup.forEach((radio) => radio.classList.remove("field-error"))
+            }
+          } else {
+            // Para otros tipos de campos
+            if (!field.value.trim()) {
+              field.classList.add("field-error")
+              if (!firstErrorField) firstErrorField = field
+              isValid = false
+            } else {
+              field.classList.remove("field-error")
+            }
+          }
+        }
+      })
+
+      // Validaciones específicas adicionales solo para avance
+      if (currentAction === "solicitud_next_step1") {
+        // Validar que se haya seleccionado un tipo de menú
+        const menuType = document.querySelector('input[name="menu_type"]:checked')
+        if (!menuType) {
+          isValid = false
+          const menuRadios = document.querySelectorAll('input[name="menu_type"]')
+          menuRadios.forEach((radio) => radio.classList.add("field-error"))
+          if (!firstErrorField) firstErrorField = menuRadios[0]
+        }
+
+        // Validar opciones de menú según el tipo seleccionado
+        if (menuType) {
+          const menuValue = menuType.value
+          const menuGroup = document.getElementById(`${menuValue}_options`)
+
+          if (menuGroup && menuGroup.classList.contains("active")) {
+            const menuRequiredFields = menuGroup.querySelectorAll("select[required]")
+            menuRequiredFields.forEach((field) => {
+              if (!field.value.trim()) {
+                field.classList.add("field-error")
+                if (!firstErrorField) firstErrorField = field
+                isValid = false
+              }
+            })
+          }
+        }
+      }
+
+      // Si hay errores, prevenir el envío y mostrar mensaje
+      if (!isValid) {
+        console.log("Validación falló - Previniendo envío")
+        e.preventDefault()
+
+        // Mostrar notificación de error
+        showNotification("Por favor, completa todos los campos obligatorios antes de continuar.", "error")
+
+        // Scroll al primer campo con error
+        if (firstErrorField) {
+          firstErrorField.scrollIntoView({ behavior: "smooth", block: "center" })
+          setTimeout(() => firstErrorField.focus(), 500)
+        }
+      } else {
+        console.log("Validación exitosa - Permitiendo envío")
+
+        // Mostrar notificación de éxito para confirmaciones
+        if (currentAction === "pago_confirm") {
+          showNotification("Procesando registro de pago...", "info", 2000)
+        } else if (currentAction === "solicitud_confirm") {
+          showNotification("Procesando solicitud de reserva...", "info", 2000)
+        }
+      }
+    })
   })
 
-  // Mostrar la sección seleccionada con animación
-  const seccionAMostrar = document.getElementById(`seccion-${tipo}`)
-  if (seccionAMostrar) {
+  // Inicializar estados
+  showMenuOptions()
+  togglePaymentFields()
+  toggleRucField()
+
+  // Animaciones y efectos visuales
+  const formSteps = document.querySelectorAll(".form-step")
+  formSteps.forEach((step) => {
+    if (step.classList.contains("active")) {
+      step.style.opacity = "1"
+      step.style.transform = "translateY(0)"
+    }
+  })
+
+  // Efecto ripple para botones
+  const buttons = document.querySelectorAll(".btn")
+  buttons.forEach((button) => {
+    button.addEventListener("click", function (e) {
+      const ripple = document.createElement("span")
+      const rect = this.getBoundingClientRect()
+      const size = Math.max(rect.width, rect.height)
+      const x = e.clientX - rect.left - size / 2
+      const y = e.clientY - rect.top - size / 2
+
+      ripple.style.width = ripple.style.height = size + "px"
+      ripple.style.left = x + "px"
+      ripple.style.top = y + "px"
+      ripple.classList.add("ripple")
+
+      this.appendChild(ripple)
+
+      setTimeout(() => {
+        ripple.remove()
+      }, 600)
+    })
+  })
+
+  // Limpiar localStorage cuando se completa exitosamente
+  const urlParams = new URLSearchParams(window.location.search)
+  const successMessage = urlParams.get("success")
+
+  if (successMessage) {
+    persistentFields.forEach((fieldName) => {
+      localStorage.removeItem(`reserva_${fieldName}`)
+    })
+  }
+
+  // Función para inicializar animaciones
+  function initializeAnimations() {
+    // Animar elementos al cargar la página
+    const animate = (elements, delay = 0) => {
+      elements.forEach((element, index) => {
+        setTimeout(
+          () => {
+            element.classList.add("animate")
+          },
+          delay + index * 50,
+        )
+      })
+    }
+
+    // Animar diferentes grupos de elementos
     setTimeout(() => {
-      seccionAMostrar.classList.add("active")
+      animate(document.querySelectorAll(".animate-fade-in"), 100)
+      animate(document.querySelectorAll(".animate-scale-in"), 200)
+      animate(document.querySelectorAll(".animate-button"), 300)
+      animate(document.querySelectorAll(".step-animate"), 400)
     }, 100)
   }
 
-  // Actualizar botones de menú
-  document.querySelectorAll(".boton-menu").forEach((boton) => {
-    boton.classList.remove("active")
-    if (boton.getAttribute("onclick").includes(tipo)) {
-      boton.classList.add("active")
-    }
-  })
-}
+  // Inicializar animaciones
+  initializeAnimations()
 
-// Función para limpiar errores
-function limpiarErrores() {
-  const campos = document.querySelectorAll(".error-field")
-  campos.forEach((campo) => {
-    campo.classList.remove("error-field")
-  })
-}
+  // Función para animar elementos al hacer scroll
+  function animateOnScroll() {
+    const elements = document.querySelectorAll(
+      ".animate-fade-in:not(.animate), .animate-fade-in-left:not(.animate), .animate-fade-in-right:not(.animate), .animate-scale-in:not(.animate), .animate-slide-up:not(.animate), .animate-button:not(.animate), .step-animate:not(.animate)",
+    )
 
-// Función para mostrar animación de carga en el botón de pago
-function mostrarCargaPago(mostrar) {
-  const btnPagar = document.querySelector(".btn-pagar")
-  if (btnPagar) {
-    if (mostrar) {
-      btnPagar.classList.add("loading")
-    } else {
-      btnPagar.classList.remove("loading")
-    }
-  }
-}
+    elements.forEach((element) => {
+      const elementTop = element.getBoundingClientRect().top
+      const elementVisible = 100
 
-// Inicialización cuando el DOM está cargado
-document.addEventListener("DOMContentLoaded", () => {
-  // Configurar fecha mínima
-  const fechaInput = document.getElementById("rdate")
-  if (fechaInput) {
-    const hoy = new Date()
-    const fechaFormateada = hoy.toISOString().split("T")[0]
-    fechaInput.min = fechaFormateada
-
-    // Si no hay fecha seleccionada, establecer la fecha actual
-    if (!fechaInput.value) {
-      fechaInput.value = fechaFormateada
-    }
-  }
-
-  // Asignar eventos a los campos de tarjeta
-  const numeroTarjeta = document.getElementById("numero-tarjeta")
-  if (numeroTarjeta) {
-    numeroTarjeta.addEventListener("input", formatearNumeroTarjeta)
-    numeroTarjeta.addEventListener("focus", function () {
-      this.classList.remove("error-field")
-    })
-  }
-
-  const fechaExpiracion = document.getElementById("fecha-expiracion")
-  if (fechaExpiracion) {
-    fechaExpiracion.addEventListener("input", formatearFechaExpiracion)
-    fechaExpiracion.addEventListener("focus", function () {
-      this.classList.remove("error-field")
-    })
-  }
-
-  const cvc = document.getElementById("cvc")
-  if (cvc) {
-    cvc.addEventListener("focus", function () {
-      this.classList.remove("error-field")
-    })
-  }
-
-  // Asignar evento al botón de pago
-  const btnPagar = document.querySelector(".btn-pagar")
-  if (btnPagar) {
-    btnPagar.addEventListener("click", (e) => {
-      limpiarErrores()
-      if (!validarPago()) {
-        e.preventDefault() // Evitar envío del formulario si la validación falla
-      } else {
-        // Mostrar animación de carga
-        mostrarCargaPago(true)
-
-        // Asegurarse de que el formulario se envíe correctamente
-        const form = document.getElementById("rform")
-        if (form) {
-          // Asegurarse de que todos los campos necesarios estén incluidos
-          const hiddenFields = [
-            { name: "cardholder_name", id: "nombre-titular" },
-            { name: "numero_tarjeta", id: "numero-tarjeta" },
-            { name: "fecha_expiracion", id: "fecha-expiracion" },
-            { name: "cvc", id: "cvc" },
-          ]
-
-          // Verificar si los campos ocultos ya existen, si no, crearlos
-          hiddenFields.forEach((field) => {
-            if (!document.querySelector(`input[name="${field.name}"]`)) {
-              const input = document.createElement("input")
-              input.type = "hidden"
-              input.name = field.name
-              input.value = document.getElementById(field.id).value.replace(/\s/g, "") // Eliminar espacios
-              form.appendChild(input)
-            } else {
-              // Si ya existe, actualizar su valor
-              document.querySelector(`input[name="${field.name}"]`).value = document
-                .getElementById(field.id)
-                .value.replace(/\s/g, "")
-            }
-          })
-
-          console.log("Enviando formulario con todos los datos...")
-          form.submit() // Enviar el formulario manualmente
-        }
+      if (elementTop < window.innerHeight - elementVisible) {
+        element.classList.add("animate")
       }
     })
   }
 
-  // Mostrar la primera sección de menú por defecto
-  mostrarSeccion("desayuno")
-
-  // Asignar eventos a los botones de menú
-  document.querySelectorAll(".boton-menu").forEach((boton) => {
-    boton.addEventListener("click", function () {
-      const tipo = this.getAttribute("onclick").match(/'([^']+)'/)[1]
-      mostrarSeccion(tipo)
-    })
+  // Ejecutar animaciones al hacer scroll
+  window.addEventListener("scroll", animateOnScroll)
+  window.addEventListener("load", () => {
+    setTimeout(animateOnScroll, 50)
   })
 
-  // Inicializar el indicador de progreso
-  updateProgressSteps()
-
-  // Mostrar el primer paso
-  document.getElementById("step1").classList.add("active")
-
-  // Asignar evento al formulario para asegurar que se envíen todos los datos
-  const formulario = document.getElementById("rform")
-  if (formulario) {
-    formulario.addEventListener("submit", (e) => {
-      // Si estamos en el paso de pago y la validación pasa, asegurarse de que se envíen todos los datos
-      if (currentStep === 4 && validarPago()) {
-        // Mostrar animación de carga
-        mostrarCargaPago(true)
-
-        // Asegurarse de que los campos de tarjeta se envíen correctamente
-        const numeroTarjeta = document.getElementById("numero-tarjeta")
-        if (numeroTarjeta) {
-          // Crear o actualizar campo oculto para el número de tarjeta sin espacios
-          let hiddenField = document.querySelector('input[name="numero_tarjeta"]')
-          if (!hiddenField) {
-            hiddenField = document.createElement("input")
-            hiddenField.type = "hidden"
-            hiddenField.name = "numero_tarjeta"
-            formulario.appendChild(hiddenField)
-          }
-          hiddenField.value = numeroTarjeta.value.replace(/\s/g, "")
-        }
-
-        console.log("Formulario enviado correctamente")
-      } else {
-        e.preventDefault() // Evitar envío si no estamos en el paso de pago o la validación falla
-        console.log("Formulario no enviado - validación fallida o paso incorrecto")
-      }
-    })
-  }
-
-  // Añadir eventos para animaciones en hover a elementos del resumen
-  document.addEventListener("mouseover", (e) => {
-    if (e.target.closest(".menu-item")) {
-      e.target.closest(".menu-item").style.transform = "translateY(-5px)"
-      e.target.closest(".menu-item").style.boxShadow = "var(--shadow-md)"
-    }
-  })
-
-  document.addEventListener("mouseout", (e) => {
-    if (e.target.closest(".menu-item")) {
-      e.target.closest(".menu-item").style.transform = ""
-      e.target.closest(".menu-item").style.boxShadow = ""
-    }
-  })
+  console.log("Sistema de Reservas Kawai - JavaScript cargado correctamente")
 })
 
-// Función para agregar efecto de onda al hacer clic en botones
-function addRippleEffect(event) {
-  const button = event.currentTarget
-
-  const circle = document.createElement("span")
-  const diameter = Math.max(button.clientWidth, button.clientHeight)
-
-  circle.style.width = circle.style.height = `${diameter}px`
-  circle.style.left = `${event.clientX - button.offsetLeft - diameter / 2}px`
-  circle.style.top = `${event.clientY - button.offsetTop - diameter / 2}px`
-  circle.classList.add("ripple")
-
-  const ripple = button.querySelector(".ripple")
-  if (ripple) {
-    ripple.remove()
-  }
-
-  button.appendChild(circle)
+// Estilos CSS adicionales para efectos ripple
+const rippleStyles = `
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  transform: scale(0);
+  animation: ripple-animation 0.6s linear;
+  pointer-events: none;
 }
 
-// Agregar efecto de onda a todos los botones
-document.addEventListener("DOMContentLoaded", () => {
-  const buttons = document.querySelectorAll("button, .boton-menu, .btn-volver, .btn-pagar")
-  buttons.forEach((button) => {
-    button.addEventListener("click", addRippleEffect)
-  })
-})
+@keyframes ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
 
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+`
+
+// Agregar estilos al documento
+const styleSheet = document.createElement("style")
+styleSheet.textContent = rippleStyles
+document.head.appendChild(styleSheet)

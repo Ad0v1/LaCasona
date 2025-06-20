@@ -1,0 +1,22 @@
+# Archivos de configuración sensibles
+#.env
+
+# Carpetas generadas por Docker o composer
+#db_data/
+#vendor/
+
+# Archivos temporales o binarios del sistema
+#*.log
+#*.tmp
+#*.swp
+#.DS_Store
+#Thumbs.db
+
+# Configuraciones del editor
+#.vscode/
+#.idea/
+
+# Archivos de respaldo
+#*.bak
+#*.sql~
+#*.zip

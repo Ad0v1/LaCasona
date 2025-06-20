@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   web:
     build: .
@@ -7,9 +8,10 @@ services:
     volumes:
       - ./frontend/public:/var/www/html
       - ./frontend/assets:/var/www/html/assets
-
-
-    env_file: 
+      - ./backend/admin:/var/www/html/admin
+      - ./backend/controllers:/var/www/html/controllers
+      - ./backend/includes:/var/www/html/includes
+    env_file:
       - .env
     depends_on:
       - db
@@ -19,9 +21,20 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_DATABASE: reservaciones
+      MYSQL_DATABASE: reservacioneskawai
     volumes:
       - db_data:/var/lib/mysql
+      - ./devops/mysql-init:/docker-entrypoint-initdb.d
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+    depends_on:
+      - db
 
 volumes:
   db_data:

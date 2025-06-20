@@ -1,8 +1,14 @@
 <?php
 // admin/registeradmin.php
-include '../public/db.php';
 
-// Datos a registrar
+session_start();
+require_once __DIR__ . '/../includes/database.php'; // Importar clase Database
+
+// Crear instancia de la clase Database y obtener la conexión
+$db = new Database();
+$conn = $db->getConnection();
+
+// Datos del nuevo administrador
 $nombre = "root";
 $email = "root@gmail.com";
 $password = "root";
@@ -10,17 +16,20 @@ $password = "root";
 // Encriptar la contraseña
 $hashed_password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
 
-// Verifica si el email ya existe
+// SQL para insertar o actualizar
 $sql = "INSERT INTO administradores (nombre, email, contraseña) 
         VALUES (?, ?, ?) 
         ON DUPLICATE KEY UPDATE contraseña = ?";
 
-$stmt = mysqli_prepare($con, $sql);
-mysqli_stmt_bind_param($stmt, "ssss", $nombre, $email, $hashed_password, $hashed_password);
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ssss", $nombre, $email, $hashed_password, $hashed_password);
 
-if (mysqli_stmt_execute($stmt)) {
-    echo "✅ Admin registrado o actualizado:<br>Email: $email<br>Contraseña: $password";
+if ($stmt->execute()) {
+    echo "✅ Administrador registrado o actualizado:<br>Email: $email<br>Contraseña: $password";
 } else {
-    echo "❌ Error: " . mysqli_error($con);
+    echo "❌ Error al registrar: " . $stmt->error;
 }
+
+$stmt->close();
+$conn->close();
 ?>
