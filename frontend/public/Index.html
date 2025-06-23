@@ -16,7 +16,6 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/imagenes/LOGO/Logo-apple.png">
     <link rel="Logo-32x32" type="image/png" sizes="32x32" href="/assets/imagenes/LOGO/Logo-32x32.png">
     <link rel="Logo-16x16" type="image/png" sizes="16x16" href="/assets/imagenes/LOGO/Logo-16x16.png">
-    <link rel="manifest" href="site.webmanifest">
 
     <style>
     /* ===== ANIMACIONES ESPECÍFICAS PARA INDEX.HTML ===== */
@@ -577,12 +576,7 @@
                 <div class="column xl-6 lg-12">
                     <p class="ss-copyright animate-fade-in">
                         <span>© Copyright Kawaii 2025</span>
-                    </p>
-                </div>
-                <div class="column xl-6 lg-12">
-                    <p class="ss-copyright animate-fade-in">
-                        <span>© Copyright Kawaii 2025</span>
-                        <a href="#" onclick="abrirLogin()" style="margin-left: 15px; color: #ff9800; text-decoration: underline;">
+                        <a href="admin/Login.php" style="margin-left: 15px; color: #ff9800; text-decoration: underline;">
                             Acceso Administrativo
                         </a>
                     </p>
@@ -603,14 +597,6 @@
     <script src="assets/js/Complementos.js"></script>
     <script src="assets/js/Main.js"></script>
     <script>
-        function abrirLogin() {
-            window.open(
-                'admin/IndexAdmin.php',
-                'LoginAdmin',
-                'width=500,height=600,top=100,left=100,toolbar=no,location=no,directories=no,status=no,menubar=no'
-            );
-        }
-
         // Animaciones al hacer scroll
         function animateOnScroll() {
             const elements = document.querySelectorAll('.animate-fade-in, .animate-fade-in-left, .animate-fade-in-right, .animate-scale-in, .animate-slide-up, .animate-image, .gallery-items__item, .menu-slide-animate');
